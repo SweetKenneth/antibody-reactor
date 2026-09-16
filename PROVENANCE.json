@@ -1,0 +1,82 @@
+{
+  "schema": "shpbl.composition.provenance/v1",
+  "composition": {
+    "id": "SEM-OASB-001",
+    "name": "ANTIBODY REACTOR",
+    "engineer": "Kenneth E. Sweet Jr., composing owned SHPBL/CMPSBL capability bodies with agent-assisted implementation under his approval authority",
+    "approval": "Explicit human approval to materialize SEM-OASB-001"
+  },
+  "source_library": {
+    "release": "SHPBL-Governor-Edition-v1.7.12",
+    "archive_sha256": "4e08a648c2cc005e1f25f4ad8b910415949c0d1dcaeb6e74cfe37c0d8f097067",
+    "license": "LicenseRef-CMPSBL-Perpetual-1.0",
+    "parents_manifest": ".shpbl/parents/manifest.json",
+    "distributed": false,
+    "note": "Identified for provenance only. No source, capability body or library archive from the private SHPBL/CMPSBL library is included in this repository; the parents manifest carries unit names and seals, not code."
+  },
+  "external_oracle": {
+    "name": "Open Agent Security Benchmark",
+    "repository": "https://github.com/opena2a-org/oasb",
+    "archive_sha256": "409eb9e3f440426e1cc6076f5f4ad0848221f15eb6a6d2fd96c8d4c9d0731b8a",
+    "corpus": "corpus/v2.json",
+    "corpus_sha256": "3ca866a0e637fa198bae17cd3a8f31fb02ad20f50fedcac1caa290e6dceba14e",
+    "corpus_mode": "oasb-categorized",
+    "redistributed": false
+  },
+  "final_run": {
+    "artifact_dir": "artifacts/oasb-final",
+    "seed": 20260916,
+    "generations": 24,
+    "population": 40,
+    "elite": 8,
+    "champion": "def-g24-c7fbd215ef",
+    "vaccine": "vax-c45267d9173363",
+    "holdout": {
+      "samples": 642,
+      "categorized_attacks": 34,
+      "detected_attacks": 29,
+      "recall": 0.8529411764705882
+    }
+  },
+  "cross_validation": {
+    "folds": 5,
+    "algorithm_locked": true,
+    "categorized_attacks": 270,
+    "out_of_fold_detected": 220,
+    "out_of_fold_recall": 0.8148148148148148,
+    "non_malicious_edge_samples": 3975,
+    "flagged_non_malicious_edge": 49,
+    "safe_disagreement_rate": 0.012327044025157233,
+    "artifact": "artifacts/oasb-cv5/cross-validation.json"
+  },
+  "release": {
+    "version": "0.2.0",
+    "license": "MIT",
+    "license_note": "Relicensed from LicenseRef-CMPSBL-Perpetual-1.0 to MIT by the rights holder for public adoption. The MIT grant covers this repository only and does not extend to the private SHPBL/CMPSBL capability library or to the OASB corpus, neither of which is distributed here.",
+    "repository": "https://github.com/SweetKenneth/antibody-reactor",
+    "project_page": "https://shpbl.com/antibody-reactor",
+    "audit": "Independent adversarial re-audit of v0.1.1 with remediation. Fixes were selected so they could not perturb the evolutionary trajectory; verified by comparing the rebuilt artifacts against the v0.1.1 artifacts. Champion, sealed-holdout recall and five-fold out-of-fold recall are unchanged."
+  },
+  "reproducibility": {
+    "byte_reproducible": true,
+    "method": "All artifact-bound timestamps come from a fixed-epoch logical clock (src/clock.ts). Two runs of the same seed against the same corpus bytes produce byte-identical artifacts.",
+    "ledger_anchor": "anchor:5af96e8814d2b5acb8090bba147c6cfe4d2bf86a5c7495ab11f4614d6da5f9da",
+    "ledger_anchor_derivation": "anchor:sha256(corpusSha256 + ':' + seed)",
+    "ledger_head": "d4ad72536338804cee4815c4e3e345b9103f31c285b4223a590e93782d0c7397",
+    "ledger_entries": 4454,
+    "oasb_commit": "fddf2b1379c5597a3e83a3c6f7833b8e5613a04e",
+    "node_versions_tested": [
+      "20.x",
+      "22.x"
+    ],
+    "run_command": "node dist/cli.js run --corpus <oasb>/corpus/v2.json --out artifacts/oasb-final --seed 20260916 --generations 24 --population 40 --elite 8",
+    "crossvalidate_command": "node dist/cli.js crossvalidate --corpus <oasb>/corpus/v2.json --out artifacts/oasb-cv5 --folds 5"
+  },
+  "claim_boundaries": [
+    "The defensible external detection receipt is out-of-fold categorized-attack recall: 220/270 = 81.48% across five independent evolutionary populations, each OASB categorized fixture held out exactly once.",
+    "Sealed-holdout recall of 29/34 = 85.29% is secondary evidence over a small denominator and must not be compared directly to a scanner measured over all 270 fixtures.",
+    "OASB withdrew its precision, F1, false-positive-rate and flag-rate claims on 2026-08-09 because much of the benign class was labeled using the scanner under test. Benign disagreement here (49/3,975 out-of-fold, 1.23%; 1/608 on the sealed holdout, 0.16%) is retained as evolutionary counter-pressure and is not a false-positive-rate claim.",
+    "OASB is used as evolutionary selection pressure. Results are not presented as an independent post-hoc benchmark score, and no comparability to OASB or HackMyAgent historical scores is claimed.",
+    "No OASB sample id, expected answer, benchmark filename or fixture identity is hard-coded. Classification depends only on artifact content and the evolved genome."
+  ]
+}

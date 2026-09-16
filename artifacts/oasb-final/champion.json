@@ -1,0 +1,734 @@
+{
+  "id": "def-g24-c7fbd215ef",
+  "name": "Antibody-G24-1292e1d1",
+  "generation": 24,
+  "parentIds": [
+    "def-g23-6b6ed7defd"
+  ],
+  "rules": [
+    {
+      "id": "rule-939ec0075a",
+      "term": "file.write",
+      "weight": 7,
+      "source": "bred",
+      "category": "heartbeat_rce",
+      "evidence": {
+        "maliciousDocs": 26,
+        "benignDocs": 7,
+        "maliciousRate": 0.14207650273224043,
+        "benignRate": 0.002711076684740511,
+        "logOdds": 4.031726161380615
+      }
+    },
+    {
+      "id": "rule-bdf49c3c38",
+      "term": "auth",
+      "weight": 4.5447,
+      "source": "bred",
+      "category": "prompt_injection",
+      "evidence": {
+        "maliciousDocs": 6,
+        "benignDocs": 4,
+        "maliciousRate": 0.03278688524590164,
+        "benignRate": 0.001549186676994578,
+        "logOdds": 3.02607988254
+      }
+    },
+    {
+      "id": "rule-545ea53846",
+      "term": "node",
+      "weight": 6.8425,
+      "source": "bred",
+      "category": "persistence",
+      "evidence": {
+        "maliciousDocs": 16,
+        "benignDocs": 5,
+        "maliciousRate": 0.08743169398907104,
+        "benignRate": 0.0019364833462432224,
+        "logOdds": 3.8013958320080783
+      }
+    },
+    {
+      "id": "rule-4fe3cdd404",
+      "term": "permissions",
+      "weight": 7.3589,
+      "source": "bred",
+      "category": "privilege_escalation",
+      "evidence": {
+        "maliciousDocs": 12,
+        "benignDocs": 3,
+        "maliciousRate": 0.06557377049180328,
+        "benignRate": 0.0011618900077459333,
+        "logOdds": 3.9331832745154807
+      }
+    },
+    {
+      "id": "rule-e642b12901",
+      "term": "mode",
+      "weight": 6.4537,
+      "source": "bred",
+      "category": "prompt_injection",
+      "evidence": {
+        "maliciousDocs": 9,
+        "benignDocs": 2,
+        "maliciousRate": 0.04918032786885246,
+        "benignRate": 0.000774593338497289,
+        "logOdds": 3.9581453255630556
+      }
+    },
+    {
+      "id": "rule-085f544604",
+      "term": "authentication tokens",
+      "weight": 5.2612,
+      "source": "bred",
+      "category": "credential_exfiltration",
+      "evidence": {
+        "maliciousDocs": 4,
+        "benignDocs": 0,
+        "maliciousRate": 0.02185792349726776,
+        "benignRate": 0,
+        "logOdds": 4.510869695626729
+      }
+    },
+    {
+      "id": "rule-e9d8992f34",
+      "term": "disable",
+      "weight": 6.5232,
+      "source": "bred",
+      "category": "privilege_escalation",
+      "evidence": {
+        "maliciousDocs": 11,
+        "benignDocs": 3,
+        "maliciousRate": 0.060109289617486336,
+        "benignRate": 0.0011618900077459333,
+        "logOdds": 3.8456997119558927
+      }
+    },
+    {
+      "id": "rule-edb4656242",
+      "term": "note",
+      "weight": 7.3056,
+      "source": "mutated",
+      "category": "supply_chain",
+      "evidence": {
+        "maliciousDocs": 15,
+        "benignDocs": 1,
+        "maliciousRate": 0.08196721311475409,
+        "benignRate": 0.0003872966692486445,
+        "logOdds": 4.925028990135093
+      }
+    },
+    {
+      "id": "rule-5ce9de3bb1",
+      "term": "term memory",
+      "weight": 6.2272,
+      "source": "bred",
+      "category": "persistence",
+      "evidence": {
+        "maliciousDocs": 4,
+        "benignDocs": 0,
+        "maliciousRate": 0.02185792349726776,
+        "benignRate": 0,
+        "logOdds": 4.510869695626729
+      }
+    },
+    {
+      "id": "rule-e904c9ccfa",
+      "term": "format",
+      "weight": 6.0011,
+      "source": "bred",
+      "category": "prompt_injection",
+      "evidence": {
+        "maliciousDocs": 13,
+        "benignDocs": 6,
+        "maliciousRate": 0.07103825136612021,
+        "benignRate": 0.0023237800154918666,
+        "logOdds": 3.4255800146941446
+      }
+    },
+    {
+      "id": "rule-2e5caf5e2d",
+      "term": "workflow step",
+      "weight": 7,
+      "source": "bred",
+      "category": "credential_exfiltration",
+      "evidence": {
+        "maliciousDocs": 16,
+        "benignDocs": 0,
+        "maliciousRate": 0.08743169398907104,
+        "benignRate": 0,
+        "logOdds": 5.840215556600619
+      }
+    },
+    {
+      "id": "rule-d45abc86b7",
+      "term": "database_url",
+      "weight": 7,
+      "source": "bred",
+      "category": "data_exfiltration",
+      "evidence": {
+        "maliciousDocs": 10,
+        "benignDocs": 1,
+        "maliciousRate": 0.0546448087431694,
+        "benignRate": 0.0003872966692486445,
+        "logOdds": 4.513895224744861
+      }
+    },
+    {
+      "id": "rule-8a6cead438",
+      "term": "migration",
+      "weight": 5.1427,
+      "source": "bred",
+      "category": "social_engineering",
+      "evidence": {
+        "maliciousDocs": 6,
+        "benignDocs": 1,
+        "maliciousRate": 0.03278688524590164,
+        "benignRate": 0.0003872966692486445,
+        "logOdds": 4.025771390817178
+      }
+    },
+    {
+      "id": "rule-1609117504",
+      "term": "telemetry",
+      "weight": 7,
+      "source": "bred",
+      "category": "credential_exfiltration",
+      "evidence": {
+        "maliciousDocs": 6,
+        "benignDocs": 0,
+        "maliciousRate": 0.03278688524590164,
+        "benignRate": 0,
+        "logOdds": 4.8734565103824234
+      }
+    },
+    {
+      "id": "rule-e9bd04f6e6",
+      "term": "process.exec",
+      "weight": 7,
+      "source": "bred",
+      "category": "heartbeat_rce",
+      "evidence": {
+        "maliciousDocs": 9,
+        "benignDocs": 0,
+        "maliciousRate": 0.04918032786885246,
+        "benignRate": 0,
+        "logOdds": 5.258202978077171
+      }
+    },
+    {
+      "id": "rule-b277fd6236",
+      "term": "dataset",
+      "weight": 6.4628,
+      "source": "bred",
+      "category": "data_exfiltration",
+      "evidence": {
+        "maliciousDocs": 7,
+        "benignDocs": 1,
+        "maliciousRate": 0.03825136612021858,
+        "benignRate": 0.0003872966692486445,
+        "logOdds": 4.169563493204665
+      }
+    },
+    {
+      "id": "rule-9af211329b",
+      "term": "account",
+      "weight": 5.6965,
+      "source": "bred",
+      "category": "social_engineering",
+      "evidence": {
+        "maliciousDocs": 20,
+        "benignDocs": 13,
+        "maliciousRate": 0.1092896174863388,
+        "benignRate": 0.005034856700232378,
+        "logOdds": 3.1647304449417972
+      }
+    },
+    {
+      "id": "rule-f5d48a058c",
+      "term": "permanently",
+      "weight": 6.4628,
+      "source": "bred",
+      "category": "persistence",
+      "evidence": {
+        "maliciousDocs": 7,
+        "benignDocs": 1,
+        "maliciousRate": 0.03825136612021858,
+        "benignRate": 0.0003872966692486445,
+        "logOdds": 4.169563493204665
+      }
+    },
+    {
+      "id": "rule-c978089e2b",
+      "term": "file.read",
+      "weight": 6.2848,
+      "source": "bred",
+      "category": "credential_exfiltration",
+      "evidence": {
+        "maliciousDocs": 38,
+        "benignDocs": 20,
+        "maliciousRate": 0.20765027322404372,
+        "benignRate": 0.0077459333849728895,
+        "logOdds": 3.491527863555558
+      }
+    },
+    {
+      "id": "rule-3c469e9d6c",
+      "term": "token",
+      "weight": 5.7692,
+      "source": "bred",
+      "category": "prompt_injection",
+      "evidence": {
+        "maliciousDocs": 12,
+        "benignDocs": 6,
+        "maliciousRate": 0.06557377049180328,
+        "benignRate": 0.0023237800154918666,
+        "logOdds": 3.3442330295344402
+      }
+    },
+    {
+      "id": "rule-b38d9d168c",
+      "term": "connection",
+      "weight": 4.9003,
+      "source": "bred",
+      "category": "social_engineering",
+      "evidence": {
+        "maliciousDocs": 6,
+        "benignDocs": 3,
+        "maliciousRate": 0.03278688524590164,
+        "benignRate": 0.0011618900077459333,
+        "logOdds": 3.262856370214592
+      }
+    },
+    {
+      "id": "rule-6a934b4514",
+      "term": "secure",
+      "weight": 4.1527,
+      "source": "bred",
+      "category": "social_engineering",
+      "evidence": {
+        "maliciousDocs": 7,
+        "benignDocs": 7,
+        "maliciousRate": 0.03825136612021858,
+        "benignRate": 0.002711076684740511,
+        "logOdds": 2.679159728048495
+      }
+    },
+    {
+      "id": "rule-b6bf7bc8d9",
+      "term": "endpoint",
+      "weight": 7,
+      "source": "bred",
+      "category": "credential_exfiltration",
+      "evidence": {
+        "maliciousDocs": 29,
+        "benignDocs": 3,
+        "maliciousRate": 0.15846994535519127,
+        "benignRate": 0.0011618900077459333,
+        "logOdds": 4.884710154440437
+      }
+    },
+    {
+      "id": "rule-dfabe2151a",
+      "term": "github_token",
+      "weight": 5.5319,
+      "source": "bred",
+      "category": "supply_chain",
+      "evidence": {
+        "maliciousDocs": 10,
+        "benignDocs": 5,
+        "maliciousRate": 0.0546448087431694,
+        "benignRate": 0.0019364833462432224,
+        "logOdds": 3.3227606197175645
+      }
+    },
+    {
+      "id": "rule-308f407018",
+      "term": "keeps",
+      "weight": 6.2096,
+      "source": "bred",
+      "category": "heartbeat_rce",
+      "evidence": {
+        "maliciousDocs": 4,
+        "benignDocs": 0,
+        "maliciousRate": 0.02185792349726776,
+        "benignRate": 0,
+        "logOdds": 4.510869695626729
+      }
+    },
+    {
+      "id": "rule-90a74f47cc",
+      "term": "long term",
+      "weight": 6.2272,
+      "source": "bred",
+      "category": "persistence",
+      "evidence": {
+        "maliciousDocs": 4,
+        "benignDocs": 0,
+        "maliciousRate": 0.02185792349726776,
+        "benignRate": 0,
+        "logOdds": 4.510869695626729
+      }
+    },
+    {
+      "id": "rule-0e23ce2289",
+      "term": "__non_ascii__",
+      "weight": 5.9333,
+      "source": "bred",
+      "category": "unicode_stego",
+      "evidence": {
+        "maliciousDocs": 18,
+        "benignDocs": 20,
+        "maliciousRate": 0.09836065573770492,
+        "benignRate": 0.0077459333849728895,
+        "logOdds": 2.6370030563372517
+      }
+    },
+    {
+      "id": "rule-eccbdd81b4",
+      "term": "command node",
+      "weight": 7,
+      "source": "bred",
+      "category": "heartbeat_rce",
+      "evidence": {
+        "maliciousDocs": 15,
+        "benignDocs": 0,
+        "maliciousRate": 0.08196721311475409,
+        "benignRate": 0,
+        "logOdds": 5.772714109700338
+      }
+    },
+    {
+      "id": "rule-133c8eb86c",
+      "term": "validate",
+      "weight": 4.6166,
+      "source": "bred",
+      "category": "credential_exfiltration",
+      "evidence": {
+        "maliciousDocs": 7,
+        "benignDocs": 5,
+        "maliciousRate": 0.03825136612021858,
+        "benignRate": 0.0019364833462432224,
+        "logOdds": 2.9784288881773677
+      }
+    },
+    {
+      "id": "rule-0736fd5b7c",
+      "term": "collector",
+      "weight": 4.3321,
+      "source": "bred",
+      "category": "credential_exfiltration",
+      "evidence": {
+        "maliciousDocs": 4,
+        "benignDocs": 1,
+        "maliciousRate": 0.02185792349726776,
+        "benignRate": 0.0003872966692486445,
+        "logOdds": 3.6631845760614845
+      }
+    },
+    {
+      "id": "rule-238fa28a94",
+      "term": "instructions",
+      "weight": 7,
+      "source": "bred",
+      "category": "prompt_injection",
+      "evidence": {
+        "maliciousDocs": 18,
+        "benignDocs": 5,
+        "maliciousRate": 0.09836065573770492,
+        "benignRate": 0.0019364833462432224,
+        "logOdds": 3.9261854729392422
+      }
+    },
+    {
+      "id": "rule-2937013f21",
+      "term": "update",
+      "weight": 6.8082,
+      "source": "bred",
+      "category": "heartbeat_rce",
+      "evidence": {
+        "maliciousDocs": 5,
+        "benignDocs": 0,
+        "maliciousRate": 0.0273224043715847,
+        "benignRate": 0,
+        "logOdds": 4.707503747416476
+      }
+    },
+    {
+      "id": "rule-76702e4d92",
+      "term": "__shell_surface__",
+      "weight": 7,
+      "source": "bred",
+      "category": "supply_chain",
+      "evidence": {
+        "maliciousDocs": 15,
+        "benignDocs": 6,
+        "maliciousRate": 0.08196721311475409,
+        "benignRate": 0.0023237800154918666,
+        "logOdds": 3.5731637245514665
+      }
+    },
+    {
+      "id": "rule-d978e0e487",
+      "term": "immediately",
+      "weight": 5.5242,
+      "source": "bred",
+      "category": "social_engineering",
+      "evidence": {
+        "maliciousDocs": 11,
+        "benignDocs": 6,
+        "maliciousRate": 0.060109289617486336,
+        "benignRate": 0.0023237800154918666,
+        "logOdds": 3.2567494669748522
+      }
+    },
+    {
+      "id": "rule-0dd1b6d5c5",
+      "term": "permanent",
+      "weight": 7,
+      "source": "bred",
+      "category": "persistence",
+      "evidence": {
+        "maliciousDocs": 10,
+        "benignDocs": 0,
+        "maliciousRate": 0.0546448087431694,
+        "benignRate": 0,
+        "logOdds": 5.361580344310106
+      }
+    },
+    {
+      "id": "rule-ed603169a3",
+      "term": "curl bash",
+      "weight": 7,
+      "source": "bred",
+      "category": "supply_chain",
+      "evidence": {
+        "maliciousDocs": 6,
+        "benignDocs": 0,
+        "maliciousRate": 0.03278688524590164,
+        "benignRate": 0,
+        "logOdds": 4.8734565103824234
+      }
+    },
+    {
+      "id": "rule-9206aee55c",
+      "term": "unrestricted",
+      "weight": 5.5822,
+      "source": "bred",
+      "category": "prompt_injection",
+      "evidence": {
+        "maliciousDocs": 5,
+        "benignDocs": 1,
+        "maliciousRate": 0.0273224043715847,
+        "benignRate": 0.0003872966692486445,
+        "logOdds": 3.8598186278512325
+      }
+    },
+    {
+      "id": "rule-157dca92e4",
+      "term": "save",
+      "weight": 6.8082,
+      "source": "bred",
+      "category": "persistence",
+      "evidence": {
+        "maliciousDocs": 5,
+        "benignDocs": 0,
+        "maliciousRate": 0.0273224043715847,
+        "benignRate": 0,
+        "logOdds": 4.707503747416476
+      }
+    },
+    {
+      "id": "rule-41bcaa5304",
+      "term": "const require",
+      "weight": 6.2272,
+      "source": "bred",
+      "category": "heartbeat_rce",
+      "evidence": {
+        "maliciousDocs": 4,
+        "benignDocs": 0,
+        "maliciousRate": 0.02185792349726776,
+        "benignRate": 0,
+        "logOdds": 4.510869695626729
+      }
+    },
+    {
+      "id": "rule-e9e20ea3f8",
+      "term": "future sessions",
+      "weight": 6.2272,
+      "source": "bred",
+      "category": "persistence",
+      "evidence": {
+        "maliciousDocs": 4,
+        "benignDocs": 0,
+        "maliciousRate": 0.02185792349726776,
+        "benignRate": 0,
+        "logOdds": 4.510869695626729
+      }
+    },
+    {
+      "id": "rule-ee87ba2300",
+      "term": "__has_url__",
+      "weight": 7,
+      "source": "bred",
+      "category": "credential_exfiltration",
+      "evidence": {
+        "maliciousDocs": 111,
+        "benignDocs": 11,
+        "maliciousRate": 0.6065573770491803,
+        "benignRate": 0.004260263361735089,
+        "logOdds": 5.817723966863047
+      }
+    }
+  ],
+  "threshold": 11.0459,
+  "survivalScore": 97.62951399559086,
+  "state": "promoted",
+  "createdAt": "2026-01-01T03:36:34.000Z",
+  "validation": {
+    "metrics": {
+      "tp": 52,
+      "tn": 780,
+      "fp": 5,
+      "fn": 1,
+      "sampleCount": 838,
+      "precision": 0.9122807017543859,
+      "recall": 0.9811320754716981,
+      "specificity": 0.9936305732484076,
+      "f1": 0.9454545454545454,
+      "balancedAccuracy": 0.9873813243600529,
+      "mcc": 0.9423423250801135,
+      "falsePositiveRate": 0.006369426751592355,
+      "fitness": 97.62951399559086
+    },
+    "categoryMetrics": [
+      {
+        "category": "credential_exfiltration",
+        "malicious": 3,
+        "detected": 2,
+        "recall": 0.6666666666666666
+      },
+      {
+        "category": "data_exfiltration",
+        "malicious": 6,
+        "detected": 6,
+        "recall": 1
+      },
+      {
+        "category": "heartbeat_rce",
+        "malicious": 5,
+        "detected": 5,
+        "recall": 1
+      },
+      {
+        "category": "persistence",
+        "malicious": 9,
+        "detected": 9,
+        "recall": 1
+      },
+      {
+        "category": "privilege_escalation",
+        "malicious": 4,
+        "detected": 4,
+        "recall": 1
+      },
+      {
+        "category": "prompt_injection",
+        "malicious": 4,
+        "detected": 4,
+        "recall": 1
+      },
+      {
+        "category": "social_engineering",
+        "malicious": 5,
+        "detected": 5,
+        "recall": 1
+      },
+      {
+        "category": "supply_chain",
+        "malicious": 5,
+        "detected": 5,
+        "recall": 1
+      },
+      {
+        "category": "unicode_stego",
+        "malicious": 12,
+        "detected": 12,
+        "recall": 1
+      }
+    ]
+  },
+  "holdout": {
+    "metrics": {
+      "tp": 29,
+      "tn": 607,
+      "fp": 1,
+      "fn": 5,
+      "sampleCount": 642,
+      "precision": 0.9666666666666667,
+      "recall": 0.8529411764705882,
+      "specificity": 0.9983552631578947,
+      "f1": 0.90625,
+      "balancedAccuracy": 0.9256482198142415,
+      "mcc": 0.9033077301614286,
+      "falsePositiveRate": 0.00164473684210531,
+      "fitness": 91.85983414535039
+    },
+    "categoryMetrics": [
+      {
+        "category": "credential_exfiltration",
+        "malicious": 2,
+        "detected": 2,
+        "recall": 1
+      },
+      {
+        "category": "data_exfiltration",
+        "malicious": 6,
+        "detected": 6,
+        "recall": 1
+      },
+      {
+        "category": "heartbeat_rce",
+        "malicious": 6,
+        "detected": 6,
+        "recall": 1
+      },
+      {
+        "category": "persistence",
+        "malicious": 4,
+        "detected": 4,
+        "recall": 1
+      },
+      {
+        "category": "privilege_escalation",
+        "malicious": 5,
+        "detected": 1,
+        "recall": 0.2
+      },
+      {
+        "category": "prompt_injection",
+        "malicious": 3,
+        "detected": 3,
+        "recall": 1
+      },
+      {
+        "category": "social_engineering",
+        "malicious": 2,
+        "detected": 2,
+        "recall": 1
+      },
+      {
+        "category": "supply_chain",
+        "malicious": 5,
+        "detected": 4,
+        "recall": 0.8
+      },
+      {
+        "category": "unicode_stego",
+        "malicious": 1,
+        "detected": 1,
+        "recall": 1
+      }
+    ]
+  }
+}

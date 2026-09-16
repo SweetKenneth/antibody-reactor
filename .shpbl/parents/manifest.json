@@ -1,0 +1,43 @@
+{
+  "composition_id": "SEM-OASB-001",
+  "name": "ANTIBODY REACTOR",
+  "governor_release": "SHPBL-Governor-Edition-v1.7.12",
+  "governor_archive_sha256": "4e08a648c2cc005e1f25f4ad8b910415949c0d1dcaeb6e74cfe37c0d8f097067",
+  "parents": [
+    {
+      "unit": "IMMUNITY::createAntibodyGenerator",
+      "seal": "655cd4a8b9403925",
+      "artifact": "Adaptive Threat Antibody Generator",
+      "role": "threat memory and synthesized defense-rule semantics"
+    },
+    {
+      "unit": "IMMUNITY::createDefenseBreeder",
+      "seal": "0db02d516df916d7",
+      "artifact": "Immunity-Evolution Adaptive Defense Breeding",
+      "role": "strain parentage, mutation, crossover, survival and extinction"
+    },
+    {
+      "unit": "ECHO::createMutationRehearsalEngine",
+      "seal": "793f191c3e86b64d",
+      "artifact": "Mutation Rehearsal Engine",
+      "role": "candidate rehearsal, regression failure modes and verdicts"
+    },
+    {
+      "unit": "CORE::createEvidenceLedger",
+      "seal": "10a4adfdbecbbc13",
+      "artifact": "Collective Master Vault/Types",
+      "role": "evidence-ledger semantics, strengthened into a SHA-256 chain"
+    },
+    {
+      "unit": "IMMUNITY::synthesizeVaccine",
+      "seal": "f96209bdd34a3380",
+      "role": "promotion into portable hardening/vaccine specification"
+    },
+    {
+      "unit": "IMMUNITY::planCampaign",
+      "seal": "e11b7b6f64363741",
+      "role": "staged deployment-campaign semantics"
+    }
+  ],
+  "semantic_note": "This is an agent-engineered composition. Parent capability names did not dictate the implementation; their bodies and contracts were read and adapted into a new independent product whose external fitness oracle is OASB."
+}

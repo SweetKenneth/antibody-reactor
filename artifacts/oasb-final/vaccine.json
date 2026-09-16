@@ -1,0 +1,451 @@
+{
+  "schema": "shpbl.antibody-reactor.vaccine/v1",
+  "id": "vax-c45267d9173363",
+  "threatFamily": "agentic-malicious-artifact",
+  "generatedAt": "2026-01-01T03:42:21.000Z",
+  "champion": {
+    "strainId": "def-g24-c7fbd215ef",
+    "generation": 24,
+    "parentIds": [
+      "def-g23-6b6ed7defd"
+    ],
+    "threshold": 11.0459,
+    "ruleCount": 41
+  },
+  "policy": {
+    "kind": "weighted-evidence",
+    "threshold": 11.0459,
+    "rules": [
+      {
+        "id": "rule-4fe3cdd404",
+        "term": "permissions",
+        "weight": 7.3589,
+        "category": "privilege_escalation",
+        "source": "bred"
+      },
+      {
+        "id": "rule-edb4656242",
+        "term": "note",
+        "weight": 7.3056,
+        "category": "supply_chain",
+        "source": "mutated"
+      },
+      {
+        "id": "rule-ee87ba2300",
+        "term": "__has_url__",
+        "weight": 7,
+        "category": "credential_exfiltration",
+        "source": "bred"
+      },
+      {
+        "id": "rule-76702e4d92",
+        "term": "__shell_surface__",
+        "weight": 7,
+        "category": "supply_chain",
+        "source": "bred"
+      },
+      {
+        "id": "rule-eccbdd81b4",
+        "term": "command node",
+        "weight": 7,
+        "category": "heartbeat_rce",
+        "source": "bred"
+      },
+      {
+        "id": "rule-ed603169a3",
+        "term": "curl bash",
+        "weight": 7,
+        "category": "supply_chain",
+        "source": "bred"
+      },
+      {
+        "id": "rule-d45abc86b7",
+        "term": "database_url",
+        "weight": 7,
+        "category": "data_exfiltration",
+        "source": "bred"
+      },
+      {
+        "id": "rule-b6bf7bc8d9",
+        "term": "endpoint",
+        "weight": 7,
+        "category": "credential_exfiltration",
+        "source": "bred"
+      },
+      {
+        "id": "rule-939ec0075a",
+        "term": "file.write",
+        "weight": 7,
+        "category": "heartbeat_rce",
+        "source": "bred"
+      },
+      {
+        "id": "rule-238fa28a94",
+        "term": "instructions",
+        "weight": 7,
+        "category": "prompt_injection",
+        "source": "bred"
+      },
+      {
+        "id": "rule-0dd1b6d5c5",
+        "term": "permanent",
+        "weight": 7,
+        "category": "persistence",
+        "source": "bred"
+      },
+      {
+        "id": "rule-e9bd04f6e6",
+        "term": "process.exec",
+        "weight": 7,
+        "category": "heartbeat_rce",
+        "source": "bred"
+      },
+      {
+        "id": "rule-1609117504",
+        "term": "telemetry",
+        "weight": 7,
+        "category": "credential_exfiltration",
+        "source": "bred"
+      },
+      {
+        "id": "rule-2e5caf5e2d",
+        "term": "workflow step",
+        "weight": 7,
+        "category": "credential_exfiltration",
+        "source": "bred"
+      },
+      {
+        "id": "rule-545ea53846",
+        "term": "node",
+        "weight": 6.8425,
+        "category": "persistence",
+        "source": "bred"
+      },
+      {
+        "id": "rule-157dca92e4",
+        "term": "save",
+        "weight": 6.8082,
+        "category": "persistence",
+        "source": "bred"
+      },
+      {
+        "id": "rule-2937013f21",
+        "term": "update",
+        "weight": 6.8082,
+        "category": "heartbeat_rce",
+        "source": "bred"
+      },
+      {
+        "id": "rule-e9d8992f34",
+        "term": "disable",
+        "weight": 6.5232,
+        "category": "privilege_escalation",
+        "source": "bred"
+      },
+      {
+        "id": "rule-b277fd6236",
+        "term": "dataset",
+        "weight": 6.4628,
+        "category": "data_exfiltration",
+        "source": "bred"
+      },
+      {
+        "id": "rule-f5d48a058c",
+        "term": "permanently",
+        "weight": 6.4628,
+        "category": "persistence",
+        "source": "bred"
+      },
+      {
+        "id": "rule-e642b12901",
+        "term": "mode",
+        "weight": 6.4537,
+        "category": "prompt_injection",
+        "source": "bred"
+      },
+      {
+        "id": "rule-c978089e2b",
+        "term": "file.read",
+        "weight": 6.2848,
+        "category": "credential_exfiltration",
+        "source": "bred"
+      },
+      {
+        "id": "rule-41bcaa5304",
+        "term": "const require",
+        "weight": 6.2272,
+        "category": "heartbeat_rce",
+        "source": "bred"
+      },
+      {
+        "id": "rule-e9e20ea3f8",
+        "term": "future sessions",
+        "weight": 6.2272,
+        "category": "persistence",
+        "source": "bred"
+      },
+      {
+        "id": "rule-90a74f47cc",
+        "term": "long term",
+        "weight": 6.2272,
+        "category": "persistence",
+        "source": "bred"
+      },
+      {
+        "id": "rule-5ce9de3bb1",
+        "term": "term memory",
+        "weight": 6.2272,
+        "category": "persistence",
+        "source": "bred"
+      },
+      {
+        "id": "rule-308f407018",
+        "term": "keeps",
+        "weight": 6.2096,
+        "category": "heartbeat_rce",
+        "source": "bred"
+      },
+      {
+        "id": "rule-e904c9ccfa",
+        "term": "format",
+        "weight": 6.0011,
+        "category": "prompt_injection",
+        "source": "bred"
+      },
+      {
+        "id": "rule-0e23ce2289",
+        "term": "__non_ascii__",
+        "weight": 5.9333,
+        "category": "unicode_stego",
+        "source": "bred"
+      },
+      {
+        "id": "rule-3c469e9d6c",
+        "term": "token",
+        "weight": 5.7692,
+        "category": "prompt_injection",
+        "source": "bred"
+      },
+      {
+        "id": "rule-9af211329b",
+        "term": "account",
+        "weight": 5.6965,
+        "category": "social_engineering",
+        "source": "bred"
+      },
+      {
+        "id": "rule-9206aee55c",
+        "term": "unrestricted",
+        "weight": 5.5822,
+        "category": "prompt_injection",
+        "source": "bred"
+      },
+      {
+        "id": "rule-dfabe2151a",
+        "term": "github_token",
+        "weight": 5.5319,
+        "category": "supply_chain",
+        "source": "bred"
+      },
+      {
+        "id": "rule-d978e0e487",
+        "term": "immediately",
+        "weight": 5.5242,
+        "category": "social_engineering",
+        "source": "bred"
+      },
+      {
+        "id": "rule-085f544604",
+        "term": "authentication tokens",
+        "weight": 5.2612,
+        "category": "credential_exfiltration",
+        "source": "bred"
+      },
+      {
+        "id": "rule-8a6cead438",
+        "term": "migration",
+        "weight": 5.1427,
+        "category": "social_engineering",
+        "source": "bred"
+      },
+      {
+        "id": "rule-b38d9d168c",
+        "term": "connection",
+        "weight": 4.9003,
+        "category": "social_engineering",
+        "source": "bred"
+      },
+      {
+        "id": "rule-133c8eb86c",
+        "term": "validate",
+        "weight": 4.6166,
+        "category": "credential_exfiltration",
+        "source": "bred"
+      },
+      {
+        "id": "rule-bdf49c3c38",
+        "term": "auth",
+        "weight": 4.5447,
+        "category": "prompt_injection",
+        "source": "bred"
+      },
+      {
+        "id": "rule-0736fd5b7c",
+        "term": "collector",
+        "weight": 4.3321,
+        "category": "credential_exfiltration",
+        "source": "bred"
+      },
+      {
+        "id": "rule-6a934b4514",
+        "term": "secure",
+        "weight": 4.1527,
+        "category": "social_engineering",
+        "source": "bred"
+      }
+    ]
+  },
+  "validation": {
+    "tp": 52,
+    "tn": 780,
+    "fp": 5,
+    "fn": 1,
+    "sampleCount": 838,
+    "precision": 0.9122807017543859,
+    "recall": 0.9811320754716981,
+    "specificity": 0.9936305732484076,
+    "f1": 0.9454545454545454,
+    "balancedAccuracy": 0.9873813243600529,
+    "mcc": 0.9423423250801135,
+    "falsePositiveRate": 0.006369426751592355,
+    "fitness": 97.62951399559086
+  },
+  "holdout": {
+    "tp": 29,
+    "tn": 607,
+    "fp": 1,
+    "fn": 5,
+    "sampleCount": 642,
+    "precision": 0.9666666666666667,
+    "recall": 0.8529411764705882,
+    "specificity": 0.9983552631578947,
+    "f1": 0.90625,
+    "balancedAccuracy": 0.9256482198142415,
+    "mcc": 0.9033077301614286,
+    "falsePositiveRate": 0.00164473684210531,
+    "fitness": 91.85983414535039
+  },
+  "categoryMetrics": [
+    {
+      "category": "credential_exfiltration",
+      "malicious": 2,
+      "detected": 2,
+      "recall": 1
+    },
+    {
+      "category": "data_exfiltration",
+      "malicious": 6,
+      "detected": 6,
+      "recall": 1
+    },
+    {
+      "category": "heartbeat_rce",
+      "malicious": 6,
+      "detected": 6,
+      "recall": 1
+    },
+    {
+      "category": "persistence",
+      "malicious": 4,
+      "detected": 4,
+      "recall": 1
+    },
+    {
+      "category": "privilege_escalation",
+      "malicious": 5,
+      "detected": 1,
+      "recall": 0.2
+    },
+    {
+      "category": "prompt_injection",
+      "malicious": 3,
+      "detected": 3,
+      "recall": 1
+    },
+    {
+      "category": "social_engineering",
+      "malicious": 2,
+      "detected": 2,
+      "recall": 1
+    },
+    {
+      "category": "supply_chain",
+      "malicious": 5,
+      "detected": 4,
+      "recall": 0.8
+    },
+    {
+      "category": "unicode_stego",
+      "malicious": 1,
+      "detected": 1,
+      "recall": 1
+    }
+  ],
+  "deployment": {
+    "status": "planning",
+    "targets": [
+      "agent_config",
+      "mcp_tool",
+      "skill",
+      "soul",
+      "system_prompt"
+    ],
+    "phases": [
+      {
+        "name": "shadow",
+        "percent": 10,
+        "exitCriterion": "No enforcement; compare verdicts against existing telemetry."
+      },
+      {
+        "name": "canary",
+        "percent": 25,
+        "exitCriterion": "False-positive rate remains within validated envelope."
+      },
+      {
+        "name": "general",
+        "percent": 100,
+        "exitCriterion": "Recall and specificity remain within validated envelope."
+      }
+    ]
+  },
+  "provenance": {
+    "externalOracle": "Open Agent Security Benchmark corpus/v2.json labels; train/validation/holdout partitioned by stable salted hash.",
+    "shpblParents": [
+      {
+        "unit": "IMMUNITY::createAntibodyGenerator",
+        "seal": "655cd4a8b9403925"
+      },
+      {
+        "unit": "IMMUNITY::createDefenseBreeder",
+        "seal": "0db02d516df916d7"
+      },
+      {
+        "unit": "ECHO::createMutationRehearsalEngine",
+        "seal": "793f191c3e86b64d"
+      },
+      {
+        "unit": "CORE::createEvidenceLedger",
+        "seal": "10a4adfdbecbbc13"
+      },
+      {
+        "unit": "IMMUNITY::synthesizeVaccine",
+        "seal": "f96209bdd34a3380"
+      },
+      {
+        "unit": "IMMUNITY::planCampaign",
+        "seal": "e11b7b6f64363741"
+      }
+    ],
+    "trainingPolicy": "Rules are learned only from training content. Validation labels drive evolutionary selection. Holdout labels are opened exactly once after champion selection. Sample IDs are never emitted into rules."
+  }
+}

@@ -1,0 +1,443 @@
+{
+  "schema": "shpbl.antibody-reactor.crossvalidation/v1",
+  "folds": 5,
+  "corpusMode": "oasb-categorized",
+  "corpusSamples": 4245,
+  "config": {
+    "seed": 20260916,
+    "corpusMode": "oasb-categorized",
+    "generations": 24,
+    "population": 40,
+    "elite": 8,
+    "minRules": 16,
+    "maxRules": 180,
+    "candidatePoolSize": 360
+  },
+  "foldResults": [
+    {
+      "fold": 0,
+      "train": 2575,
+      "validation": 877,
+      "holdout": 793,
+      "malicious": 42,
+      "detected": 39,
+      "safeLabeled": 751,
+      "safeFlagged": 11,
+      "recall": 0.9285714285714286,
+      "safeDisagreementRate": 0.01464713715046606,
+      "championId": "def-g23-cc12b024e4",
+      "championGeneration": 24,
+      "ruleCount": 109,
+      "threshold": 16.4955,
+      "categoryMetrics": [
+        {
+          "category": "credential_exfiltration",
+          "malicious": 5,
+          "detected": 5,
+          "recall": 1
+        },
+        {
+          "category": "data_exfiltration",
+          "malicious": 8,
+          "detected": 8,
+          "recall": 1
+        },
+        {
+          "category": "heartbeat_rce",
+          "malicious": 3,
+          "detected": 3,
+          "recall": 1
+        },
+        {
+          "category": "persistence",
+          "malicious": 6,
+          "detected": 6,
+          "recall": 1
+        },
+        {
+          "category": "privilege_escalation",
+          "malicious": 1,
+          "detected": 1,
+          "recall": 1
+        },
+        {
+          "category": "prompt_injection",
+          "malicious": 4,
+          "detected": 4,
+          "recall": 1
+        },
+        {
+          "category": "social_engineering",
+          "malicious": 8,
+          "detected": 8,
+          "recall": 1
+        },
+        {
+          "category": "supply_chain",
+          "malicious": 4,
+          "detected": 1,
+          "recall": 0.25
+        },
+        {
+          "category": "unicode_stego",
+          "malicious": 3,
+          "detected": 3,
+          "recall": 1
+        }
+      ]
+    },
+    {
+      "fold": 1,
+      "train": 2599,
+      "validation": 808,
+      "holdout": 838,
+      "malicious": 56,
+      "detected": 44,
+      "safeLabeled": 782,
+      "safeFlagged": 7,
+      "recall": 0.7857142857142857,
+      "safeDisagreementRate": 0.008951406649616356,
+      "championId": "def-g16-0cf4d3a3c3",
+      "championGeneration": 24,
+      "ruleCount": 100,
+      "threshold": 17.771,
+      "categoryMetrics": [
+        {
+          "category": "credential_exfiltration",
+          "malicious": 10,
+          "detected": 9,
+          "recall": 0.9
+        },
+        {
+          "category": "data_exfiltration",
+          "malicious": 3,
+          "detected": 3,
+          "recall": 1
+        },
+        {
+          "category": "heartbeat_rce",
+          "malicious": 5,
+          "detected": 3,
+          "recall": 0.6
+        },
+        {
+          "category": "persistence",
+          "malicious": 5,
+          "detected": 5,
+          "recall": 1
+        },
+        {
+          "category": "privilege_escalation",
+          "malicious": 8,
+          "detected": 8,
+          "recall": 1
+        },
+        {
+          "category": "prompt_injection",
+          "malicious": 7,
+          "detected": 5,
+          "recall": 0.7142857142857143
+        },
+        {
+          "category": "social_engineering",
+          "malicious": 4,
+          "detected": 2,
+          "recall": 0.5
+        },
+        {
+          "category": "supply_chain",
+          "malicious": 9,
+          "detected": 5,
+          "recall": 0.5555555555555556
+        },
+        {
+          "category": "unicode_stego",
+          "malicious": 5,
+          "detected": 4,
+          "recall": 0.8
+        }
+      ]
+    },
+    {
+      "fold": 2,
+      "train": 2546,
+      "validation": 831,
+      "holdout": 868,
+      "malicious": 52,
+      "detected": 45,
+      "safeLabeled": 816,
+      "safeFlagged": 13,
+      "recall": 0.8653846153846154,
+      "safeDisagreementRate": 0.015931372549019662,
+      "championId": "def-g22-06dc3adb58",
+      "championGeneration": 24,
+      "ruleCount": 89,
+      "threshold": 17.0851,
+      "categoryMetrics": [
+        {
+          "category": "credential_exfiltration",
+          "malicious": 8,
+          "detected": 7,
+          "recall": 0.875
+        },
+        {
+          "category": "data_exfiltration",
+          "malicious": 4,
+          "detected": 3,
+          "recall": 0.75
+        },
+        {
+          "category": "heartbeat_rce",
+          "malicious": 7,
+          "detected": 7,
+          "recall": 1
+        },
+        {
+          "category": "persistence",
+          "malicious": 6,
+          "detected": 5,
+          "recall": 0.8333333333333334
+        },
+        {
+          "category": "privilege_escalation",
+          "malicious": 5,
+          "detected": 3,
+          "recall": 0.6
+        },
+        {
+          "category": "prompt_injection",
+          "malicious": 5,
+          "detected": 5,
+          "recall": 1
+        },
+        {
+          "category": "social_engineering",
+          "malicious": 6,
+          "detected": 5,
+          "recall": 0.8333333333333334
+        },
+        {
+          "category": "supply_chain",
+          "malicious": 5,
+          "detected": 4,
+          "recall": 0.8
+        },
+        {
+          "category": "unicode_stego",
+          "malicious": 6,
+          "detected": 6,
+          "recall": 1
+        }
+      ]
+    },
+    {
+      "fold": 3,
+      "train": 2542,
+      "validation": 833,
+      "holdout": 870,
+      "malicious": 53,
+      "detected": 38,
+      "safeLabeled": 817,
+      "safeFlagged": 4,
+      "recall": 0.7169811320754716,
+      "safeDisagreementRate": 0.004895960832313362,
+      "championId": "def-g24-151c322443",
+      "championGeneration": 24,
+      "ruleCount": 52,
+      "threshold": 10.9766,
+      "categoryMetrics": [
+        {
+          "category": "credential_exfiltration",
+          "malicious": 1,
+          "detected": 1,
+          "recall": 1
+        },
+        {
+          "category": "data_exfiltration",
+          "malicious": 8,
+          "detected": 8,
+          "recall": 1
+        },
+        {
+          "category": "heartbeat_rce",
+          "malicious": 6,
+          "detected": 6,
+          "recall": 1
+        },
+        {
+          "category": "persistence",
+          "malicious": 5,
+          "detected": 5,
+          "recall": 1
+        },
+        {
+          "category": "privilege_escalation",
+          "malicious": 10,
+          "detected": 4,
+          "recall": 0.4
+        },
+        {
+          "category": "prompt_injection",
+          "malicious": 6,
+          "detected": 5,
+          "recall": 0.8333333333333334
+        },
+        {
+          "category": "social_engineering",
+          "malicious": 4,
+          "detected": 2,
+          "recall": 0.5
+        },
+        {
+          "category": "supply_chain",
+          "malicious": 6,
+          "detected": 3,
+          "recall": 0.5
+        },
+        {
+          "category": "unicode_stego",
+          "malicious": 7,
+          "detected": 4,
+          "recall": 0.5714285714285714
+        }
+      ]
+    },
+    {
+      "fold": 4,
+      "train": 2529,
+      "validation": 840,
+      "holdout": 876,
+      "malicious": 67,
+      "detected": 54,
+      "safeLabeled": 809,
+      "safeFlagged": 14,
+      "recall": 0.8059701492537313,
+      "safeDisagreementRate": 0.017305315203955507,
+      "championId": "def-g23-acde696327",
+      "championGeneration": 24,
+      "ruleCount": 63,
+      "threshold": 11.7693,
+      "categoryMetrics": [
+        {
+          "category": "credential_exfiltration",
+          "malicious": 6,
+          "detected": 5,
+          "recall": 0.8333333333333334
+        },
+        {
+          "category": "data_exfiltration",
+          "malicious": 7,
+          "detected": 7,
+          "recall": 1
+        },
+        {
+          "category": "heartbeat_rce",
+          "malicious": 9,
+          "detected": 8,
+          "recall": 0.8888888888888888
+        },
+        {
+          "category": "persistence",
+          "malicious": 8,
+          "detected": 7,
+          "recall": 0.875
+        },
+        {
+          "category": "privilege_escalation",
+          "malicious": 6,
+          "detected": 3,
+          "recall": 0.5
+        },
+        {
+          "category": "prompt_injection",
+          "malicious": 8,
+          "detected": 7,
+          "recall": 0.875
+        },
+        {
+          "category": "social_engineering",
+          "malicious": 8,
+          "detected": 7,
+          "recall": 0.875
+        },
+        {
+          "category": "supply_chain",
+          "malicious": 6,
+          "detected": 3,
+          "recall": 0.5
+        },
+        {
+          "category": "unicode_stego",
+          "malicious": 9,
+          "detected": 7,
+          "recall": 0.7777777777777778
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "malicious": 270,
+    "detected": 220,
+    "recall": 0.8148148148148148,
+    "safeLabeled": 3975,
+    "safeFlagged": 49,
+    "safeDisagreementRate": 0.012327044025157233,
+    "categories": [
+      {
+        "category": "credential_exfiltration",
+        "malicious": 30,
+        "detected": 27,
+        "recall": 0.9
+      },
+      {
+        "category": "data_exfiltration",
+        "malicious": 30,
+        "detected": 29,
+        "recall": 0.9666666666666667
+      },
+      {
+        "category": "heartbeat_rce",
+        "malicious": 30,
+        "detected": 27,
+        "recall": 0.9
+      },
+      {
+        "category": "persistence",
+        "malicious": 30,
+        "detected": 28,
+        "recall": 0.9333333333333333
+      },
+      {
+        "category": "privilege_escalation",
+        "malicious": 30,
+        "detected": 19,
+        "recall": 0.6333333333333333
+      },
+      {
+        "category": "prompt_injection",
+        "malicious": 30,
+        "detected": 26,
+        "recall": 0.8666666666666667
+      },
+      {
+        "category": "social_engineering",
+        "malicious": 30,
+        "detected": 24,
+        "recall": 0.8
+      },
+      {
+        "category": "supply_chain",
+        "malicious": 30,
+        "detected": 16,
+        "recall": 0.5333333333333333
+      },
+      {
+        "category": "unicode_stego",
+        "malicious": 30,
+        "detected": 24,
+        "recall": 0.8
+      }
+    ]
+  },
+  "caveat": "Every categorized malicious fixture is out-of-fold once. Safe/benign disagreement is retained as selection counter-pressure but should not be marketed as real-world FPR because OASB documents scanner-selection bias in much of its registry benign class."
+}

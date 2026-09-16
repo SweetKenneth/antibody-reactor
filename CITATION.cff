@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use Antibody Reactor in evaluation or research, cite this software and the OASB dataset separately."
+title: "SHPBL Antibody Reactor"
+version: 0.2.0
+date-released: 2026-09-16
+authors:
+  - family-names: Sweet
+    given-names: Kenneth E.
+    name-suffix: Jr.
+    affiliation: SHPBL / CMPSBL
+license: other
+abstract: >-
+  An evolutionary agent-defense laboratory that breeds weighted security-policy
+  strains under external benchmark pressure, rehearses mutations, preserves
+  extinct defenses as a fossil record, and promotes a surviving descendant into
+  a portable vaccine artifact with a hash-chained evidence ledger.
+keywords:
+  - agent security
+  - evolutionary defense
+  - OASB
+  - security benchmark
+  - provenance

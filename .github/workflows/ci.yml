@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20', '22']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install
+      - name: Strict build
+        run: npm run build
+      - name: Engineering test suite
+        run: npm test
+      - name: Verify the published evidence chain
+        run: node dist/cli.js verify --ledger artifacts/oasb-final/evidence-ledger.json
+      - name: Refuse to ship a corpus
+        run: |
+          if [ -e corpus ]; then echo "corpus/ must never be committed"; exit 1; fi
+      - name: Refuse to ship compiled output
+        run: |
+          if git ls-files --error-unmatch dist >/dev/null 2>&1; then echo "dist/ must not be committed"; exit 1; fi

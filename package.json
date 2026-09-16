@@ -1,0 +1,55 @@
+{
+  "name": "antibody-reactor",
+  "version": "0.2.0",
+  "description": "Evolutionary agent-defense reactor governed by SHPBL and evaluated against an external OASB corpus.",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "antibody-reactor": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "tsc -p tsconfig.test.json && node --test dist-test/test/*.test.js",
+    "react": "node dist/cli.js run",
+    "verify": "node dist/cli.js verify",
+    "scan": "node dist/cli.js scan",
+    "test:compiled": "node --test dist-test/test/*.test.js",
+    "verify:ledger": "node dist/cli.js verify --ledger artifacts/oasb-final/evidence-ledger.json",
+    "verify:release": "npm run test:compiled && npm run verify:ledger",
+    "crossvalidate": "node dist/cli.js crossvalidate"
+  },
+  "engines": {
+    "node": ">=20.11"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.3"
+  },
+  "author": "Kenneth E. Sweet Jr.",
+  "homepage": "https://shpbl.com/antibody-reactor",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SweetKenneth/antibody-reactor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SweetKenneth/antibody-reactor/issues"
+  },
+  "keywords": [
+    "agent-security",
+    "evolutionary-algorithm",
+    "oasb",
+    "security-policy",
+    "prompt-injection",
+    "reproducible-research",
+    "ai-agent-security"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY.md",
+    "PROVENANCE.json"
+  ]
+}
