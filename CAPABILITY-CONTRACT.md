@@ -82,3 +82,22 @@ The report SHALL distinguish categorized malicious recall from benign-derived me
 - OASB categorized external-oracle holdout: **29 / 34 attacks detected (85.29%)**
 - Five-fold out-of-fold OASB attack recall: **220 / 270 (81.48%)**
 - Champion: **generation 24**, 41-rule genome
+
+
+---
+
+## v0.3.0 candidate additions
+
+The verification state above is the historical v0.1/v0.2 record and is preserved as written. Current evidence: `TEST-RESULTS.md`.
+
+### C13 — Fail-closed scanning
+A vaccine SHALL be validated before any scan; an invalid vaccine SHALL be refused. Any input that cannot be scanned SHALL yield `unknown`, never `benign`. **Evidence:** `src/vaccine-validate.ts`, `src/oasb-scanner.ts`, tests V2–V5.
+
+### C14 — Pinned evidence
+Ledger and vaccine verification SHALL support pins obtained outside the artifact (head, anchor, entry count, file SHA-256, policy fingerprint) and SHALL report when no pin was supplied. **Evidence:** `src/ledger.ts`, `src/trust.ts`, `TRUSTED-FINGERPRINTS.json`, tests V3, V6.
+
+### C15 — Human authority over enforcement
+No step that increases enforcement SHALL occur without an approval accepted by an explicitly configured authorizer; the default SHALL deny. Steps that reduce enforcement MAY be automatic. **Evidence:** `src/deployment.ts`, tests P3.
+
+### C16 — Honest confidence and independent measurement
+Confidence SHALL be labelled as an uncalibrated heuristic. Generalisation claims SHALL rest only on sets never used for training or selection. **Evidence:** test V1, `docs/INDEPENDENT-VALIDATION.md`, test P4.

@@ -10,3 +10,7 @@ export * from './reactor.js';
 export * from './oasb-scanner.js';
 export * from './report.js';
 export * from './crossvalidate.js';
+export * from './vaccine-validate.js';
+export * from './trust.js';
+export * from './deployment.js';
+export * from './independent.js';

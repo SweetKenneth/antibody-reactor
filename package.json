@@ -1,6 +1,6 @@
 {
   "name": "antibody-reactor",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Evolutionary agent-defense reactor governed by SHPBL and evaluated against an external OASB corpus.",
   "type": "module",
   "main": "dist/index.js",
@@ -14,9 +14,10 @@
     "verify": "node dist/cli.js verify",
     "scan": "node dist/cli.js scan",
     "test:compiled": "node --test dist-test/test/*.test.js",
-    "verify:ledger": "node dist/cli.js verify --ledger artifacts/oasb-final/evidence-ledger.json",
+    "verify:ledger": "node dist/cli.js verify --ledger artifacts/oasb-final/evidence-ledger.json --trusted TRUSTED-FINGERPRINTS.json --release 0.2.0 --require-pins",
     "verify:release": "npm run test:compiled && npm run verify:ledger",
-    "crossvalidate": "node dist/cli.js crossvalidate"
+    "crossvalidate": "node dist/cli.js crossvalidate",
+    "eval:independent": "node dist/cli.js independent --trusted TRUSTED-FINGERPRINTS.json --release 0.2.0 --vaccine artifacts/oasb-final/vaccine.json --samples test-sets/deepset-prompt-injections-test.json --samples test-sets/jackhhao-jailbreak-test.json --samples test-sets/authored-agent-artifacts.json"
   },
   "engines": {
     "node": ">=20.11"
@@ -50,6 +51,7 @@
     "README.md",
     "LICENSE",
     "THIRD_PARTY.md",
-    "PROVENANCE.json"
+    "PROVENANCE.json",
+    "TRUSTED-FINGERPRINTS.json"
   ]
 }

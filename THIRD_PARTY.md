@@ -20,3 +20,13 @@ The composition was engineered from capability bodies in a private library owned
 ## This project
 
 MIT, Copyright (c) 2026 Kenneth E. Sweet Jr. See `LICENSE`.
+
+
+## Independent test sets (added in v0.3.0 candidate)
+
+`test-sets/` contains the `test` splits of two Hugging Face datasets, redistributed under Apache-2.0 for reproducible evaluation only. They were never used for training.
+
+- **deepset/prompt-injections** — revision `4f61ecb038e9c3fb77e21034b22511b523772cdd`, Apache-2.0, © deepset GmbH. Converted to `{id, label, content}`; `label` 1 → `malicious`, 0 → `benign`.
+- **jackhhao/jailbreak-classification** — revision `2f2ceeb39658696fd3f462403562b6eea5306287`, Apache-2.0, © Jack Hao. Converted to `{id, label, content}`; `jailbreak` → `malicious`, `benign` → `benign`.
+
+`test-sets/authored-agent-artifacts.json` was written for this project and is covered by this repository's MIT licence.
