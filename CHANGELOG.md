@@ -11,7 +11,7 @@ Production-hardening candidate. **Not a production-readiness declaration.** No p
 - Vaccines were used without validation; corrupt thresholds, empty rule sets or negated weights silently produced "benign" for obvious attacks. Vaccines are now validated and refused at construction.
 - Vaccines had no integrity binding. Policy fingerprint and file SHA-256 pinning added.
 - No input limits; non-string input crashed. 1 MiB default limit; every failure returns `unknown`, never `benign`.
-- Ledger verification accepted a fully re-chained forgery and an empty ledger, and crashed on malformed entries. Head, anchor, entry-count and file-hash pins added (`TRUSTED-FINGERPRINTS.json`); CI verifies pinned.
+- Ledger verification accepted a fully re-chained forgery and an empty ledger, and crashed on malformed entries. Head, anchor, entry-count and file-hash pins added (`TRUSTED-FINGERPRINTS.json`); a CI step to verify pinned is proposed in the PR (workflow files need a separate permission).
 - Scanner reported version 0.1.1.
 
 ### Added
