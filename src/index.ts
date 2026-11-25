@@ -14,3 +14,4 @@ export * from './vaccine-validate.js';
 export * from './trust.js';
 export * from './deployment.js';
 export * from './independent.js';
+export * from './deployment-store.js';

@@ -36,7 +36,7 @@ export interface LedgerVerification {
 
 /**
  * Pins that come from a channel the ledger's author cannot also rewrite: a
- * signed tag, PROVENANCE.json at a known commit, the project page. Without at
+ * out-of-band root hash, PROVENANCE.json at a known commit, the project page. Without at
  * least an anchor and a head pin, a forger can rewrite payloads and re-chain
  * every hash; the chain stays internally consistent and only the pins catch it.
  */
@@ -76,11 +76,14 @@ export function verifyLedgerEntries(
   const head = typed.at(-1)?.hash ?? UNANCHORED;
   const anchor = typed[0]?.previousHash ?? UNANCHORED;
   for (let i = 0; i < typed.length; i++) {
-    const e = typed[i]!;
-    const expectedPrevious = i === 0 ? anchor : typed[i - 1]!.hash;
+    const e = typed[i];
+    if (!e) return { valid: false, head, anchor, reason: 'missing entry' };
+    const expectedPrevious = i === 0 ? anchor : typed[i - 1]?.hash;
     if (e.index !== i) return { valid: false, brokenAt: i, head, anchor, reason: `index mismatch at ${i}` };
     if (e.previousHash !== expectedPrevious) return { valid: false, brokenAt: i, head, anchor, reason: `broken link at ${i}` };
-    const expected = sha256(canonical({ index: e.index, timestamp: e.timestamp, type: e.type, payload: e.payload, previousHash: e.previousHash }));
+    let expected: string;
+    try { expected = sha256(canonical({ index: e.index, timestamp: e.timestamp, type: e.type, payload: e.payload, previousHash: e.previousHash })); }
+    catch { return { valid: false, brokenAt: i, head, anchor, reason: 'unserializable entry' }; }
     if (e.hash !== expected) return { valid: false, brokenAt: i, head, anchor, reason: `hash mismatch at ${i}` };
   }
   const out: LedgerVerification = { valid: true, head, anchor };
@@ -109,11 +112,20 @@ export class EvidenceLedger {
 
   append<T>(type: string, payload: T, timestamp: string = this.clock.now()): LedgerEntry<T> {
     const index = this.entries.length;
-    const previousHash = index === 0 ? this.anchor : this.entries[index - 1]!.hash;
-    const hash = sha256(canonical({ index, timestamp, type, payload, previousHash }));
-    const entry: LedgerEntry<T> = { index, timestamp, type, payload, previousHash, hash };
+    const previousHash = this.entries.at(-1)?.hash ?? this.anchor;
+    const ownedPayload = structuredClone(payload);
+    const hash = sha256(canonical({ index, timestamp, type, payload: ownedPayload, previousHash }));
+    const entry: LedgerEntry<T> = { index, timestamp, type, payload: ownedPayload, previousHash, hash };
     this.entries.push(entry);
-    return entry;
+    return structuredClone(entry);
+  }
+
+  /** Restore only a verified checkpoint; the caller must authenticate its external file digest. */
+  restore(entries: unknown): void {
+    if (this.entries.length) throw new Error('cannot replace a populated ledger');
+    const check = verifyLedgerEntries(entries, this.anchor, { allowEmpty: true });
+    if (!Array.isArray(entries) || (entries.length > 0 && !check.valid)) throw new Error('invalid checkpoint ledger');
+    this.entries.push(...structuredClone(entries as LedgerEntry[]));
   }
 
   all(): LedgerEntry[] { return this.entries.map(e => structuredClone(e)); }

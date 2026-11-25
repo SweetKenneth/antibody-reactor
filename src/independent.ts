@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readBoundedText } from './bounded-read.js';
 import { sha256 } from './hash.js';
 import { AntibodyReactorScanner } from './oasb-scanner.js';
 import type { VaccineArtifact } from './types.js';
@@ -28,17 +28,22 @@ export interface IndependentSetResult {
 }
 
 export async function loadSamples(file: string): Promise<{ sha: string; samples: IndependentSample[] }> {
-  const raw = await readFile(file, 'utf8');
+  const raw = await readBoundedText(file, 64 * 1024 * 1024);
   const sha = sha256(raw);
   const parsed = JSON.parse(raw) as unknown;
-  if (!Array.isArray(parsed)) throw new Error(`${file}: expected an array`);
+  if (!Array.isArray(parsed) || parsed.length === 0 || parsed.length > 100_000) throw new Error(`${file}: expected 1–100000 samples`);
+  const ids = new Set<string>();
   const samples = parsed.map((s, i) => {
+    if (!s || typeof s !== 'object' || Array.isArray(s)) throw new Error(`${file}: sample ${i} malformed`);
     const o = s as Record<string, unknown>;
-    if (typeof o['id'] !== 'string' || typeof o['content'] !== 'string' || (o['label'] !== 'malicious' && o['label'] !== 'benign')) {
+    if (typeof o['id'] !== 'string' || !o['id'] || o['id'].length > 256 || ids.has(o['id']) || typeof o['content'] !== 'string' || (o['label'] !== 'malicious' && o['label'] !== 'benign')) {
       throw new Error(`${file}: sample ${i} malformed`);
     }
+    if (Buffer.byteLength(o['content'], 'utf8') > 1024 * 1024) throw new Error(`${file}: sample ${i} exceeds 1 MiB`);
+    ids.add(o['id']);
     return { id: o['id'], label: o['label'], content: o['content'] } as IndependentSample;
   });
+  if (!samples.some(s => s.label === 'malicious') || !samples.some(s => s.label === 'benign')) throw new Error(`${file}: both classes required`);
   return { sha, samples };
 }
 

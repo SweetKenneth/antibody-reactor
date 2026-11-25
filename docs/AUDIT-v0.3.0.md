@@ -42,7 +42,7 @@ Each was reproduced against the v0.2.0 build before fixing (`/tmp/probe.mjs` out
 | V3 | **No integrity binding.** A plausible hand-edited policy (e.g. threshold +0.5) passes any structural check. | Policy fingerprint (SHA-256 of canonical policy) and file SHA-256 pinning: `expectedPolicyFingerprint`, CLI `--vaccine-sha256` / `--trusted`. Unpinned CLI scans say so in their output. | V3 ×2 |
 | V4 | **No input limits.** 10 MB inputs accepted; non-string input threw. | 1 MiB default UTF-8 limit (configurable); non-string or oversize → `unknown`, confidence 0. | V4 ×2 |
 | V5 | **Failures could surface as crashes or benign.** | Every failure path returns `unknown`; OASB `scan()` adapter never throws on bad input; CLI exits 3 on unknown, 4 on rejected vaccine. | V5 ×2 |
-| V6 | **Ledger verify trusted itself.** A ledger rewritten and fully re-chained verified `valid: true`; the CLI never checked anchor or head. Empty ledger verified `true`; `[null]` crashed. | Pins: anchor, head, entry count, file SHA-256 (`TRUSTED-FINGERPRINTS.json`, cross-checked against `PROVENANCE.json` and the `v0.2.0` tag). Structural entry checks. Empty invalid unless `allowEmpty`. CLI reports `trust: pinned` or warns "self-consistency only"; `--require-pins` makes unpinned verification fail. The CI change to verify pinned is in the PR description (the publishing credential cannot edit workflow files). | V6 ×5 |
+| V6 | **Ledger verify trusted itself.** A ledger rewritten and fully re-chained verified `valid: true`; the CLI never checked anchor or head. Empty ledger verified `true`; `[null]` crashed. | Pins: anchor, head, entry count, file SHA-256 (`TRUSTED-FINGERPRINTS.json`, cross-checked against `PROVENANCE.json` and the `v0.2.0` tag). Structural entry checks. Empty invalid unless `allowEmpty`. CLI reports `trust: pinned` or warns "self-consistency only"; `--require-pins` makes unpinned verification fail. The local CI workflow now runs pinned verification; the GitHub PR remains unchanged. | V6 ×5 |
 | V7 | **Version drift.** Scanner reported `0.1.1` in a `0.2.0` package. | Single `SCANNER_VERSION`, asserted equal to `package.json`. `CITATION.cff` stays 0.2.0 because 0.3.0 is not released. | V7 |
 
 Honest limit on V3/V6: the pins file lives in the same repository as the artifacts. Against an attacker who can rewrite the repository it is a consistency check, not an independent one. Independent assurance requires getting the pins from a channel that attacker cannot also write (the `v0.2.0` tag, the GitHub release, shpbl.com) and passing them explicitly.
@@ -50,3 +50,7 @@ Honest limit on V3/V6: the pins file lives in the same repository as the artifac
 ## Phase 3 and Phase 4
 
 See `docs/PRODUCTION-SAFEGUARDS.md` and `docs/INDEPENDENT-VALIDATION.md`.
+
+## Re-audit addendum
+
+A second source audit reproduced or confirmed deployment-control, validator, CLI, and trust-file defects in the candidate. All listed defects now have regression tests. The candidate remains advisory/shadow-first and is not v1.0.0: independent generalization, real approver identity, trusted labels, alert delivery, external pin storage, and target-environment exercises remain open.

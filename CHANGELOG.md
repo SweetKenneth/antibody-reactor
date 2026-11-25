@@ -2,6 +2,10 @@
 
 All notable changes to this project are recorded here.
 
+## Unreleased (v0.3.0 candidate)
+- decide() fails closed (`hold`) on malformed canary request keys.
+- Added large-scale smoke/property suite (test/smoke.test.ts, SMOKE_SCALE).
+
 ## 0.3.0 — candidate (unreleased, branch `hardening/v0.3.0`)
 
 Production-hardening candidate. **Not a production-readiness declaration.** No published v0.2.0 metric, artifact or checksum changed: the full run and five-fold cross-validation were re-executed after every change and are byte-identical to the committed artifacts. Full audit: `docs/AUDIT-v0.3.0.md`.
@@ -11,7 +15,7 @@ Production-hardening candidate. **Not a production-readiness declaration.** No p
 - Vaccines were used without validation; corrupt thresholds, empty rule sets or negated weights silently produced "benign" for obvious attacks. Vaccines are now validated and refused at construction.
 - Vaccines had no integrity binding. Policy fingerprint and file SHA-256 pinning added.
 - No input limits; non-string input crashed. 1 MiB default limit; every failure returns `unknown`, never `benign`.
-- Ledger verification accepted a fully re-chained forgery and an empty ledger, and crashed on malformed entries. Head, anchor, entry-count and file-hash pins added (`TRUSTED-FINGERPRINTS.json`); a CI step to verify pinned is proposed in the PR (workflow files need a separate permission).
+- Ledger verification accepted a fully re-chained forgery and an empty ledger, and crashed on malformed entries. Head, anchor, entry-count and file-hash pins added (`TRUSTED-FINGERPRINTS.json`); the local CI workflow now uses pinned verification. The GitHub PR is not updated by this local re-audit.
 - Scanner reported version 0.1.1.
 
 ### Added
@@ -68,3 +72,7 @@ Release/submission hardening pass.
 ## 0.1.0 — 2026-09-16
 
 Initial Antibody Reactor composition and recorded OASB evolutionary runs.
+
+## Unreleased v0.3.0 candidate — re-audit fixes
+
+No published v0.2.0 artifact or metric changed. Re-audit fixes cover unreachable vaccine terms, mutable or invalid monitoring envelopes, promotion despite current bad evidence, expiry capacity leaks, mutable ledger entries, reentrant approval, policy-mixed observations, unbounded CLI reads, malformed UTF-8 input, unpinned reporting, malformed trust files, and durable checkpoint failure handling. Pinned CI ledger verification and 21 additional regression or CLI tests were added.

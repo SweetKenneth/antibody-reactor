@@ -13,6 +13,7 @@ export interface OasbCompatibleScannerResult {
 }
 
 export interface DetailedScanResult extends OasbCompatibleScannerResult {
+  policyFingerprint: string;
   score: number;
   threshold: number;
   /** score - threshold. Positive means flagged. */
@@ -67,13 +68,13 @@ export class AntibodyReactorScanner {
   private unknown(sampleId: string, error: string, start: number): DetailedScanResult {
     return {
       sampleId, verdict: 'unknown', confidence: 0, scanTimeMs: performance.now() - start,
-      score: 0, threshold: this.vaccine.policy.threshold, margin: 0, matched: [], confidenceBasis: 'none', error,
+      policyFingerprint: this.policyFingerprint, score: 0, threshold: this.vaccine.policy.threshold, margin: 0, matched: [], confidenceBasis: 'none', error,
     };
   }
 
   scanDetailed(content: string | unknown, sampleId: string, _artifactType?: string): DetailedScanResult {
     const start = performance.now();
-    const id = typeof sampleId === 'string' ? sampleId : String(sampleId);
+    const id = typeof sampleId === 'string' ? sampleId : '[invalid-sample-id]';
     if (typeof content !== 'string') return this.unknown(id, 'content is not a string', start);
     // Cheap pre-check before encoding: UTF-8 is at most 3 bytes per UTF-16 unit.
     if (content.length > this.maxInputBytes || Buffer.byteLength(content, 'utf8') > this.maxInputBytes) {
@@ -104,6 +105,7 @@ export class AntibodyReactorScanner {
         : 0.5 + (BENIGN_CONFIDENCE_CAP - 0.5) * strength;
       return {
         sampleId: id,
+        policyFingerprint: this.policyFingerprint,
         verdict: malicious ? 'malicious' : 'benign',
         category,
         confidence,

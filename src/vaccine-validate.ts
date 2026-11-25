@@ -1,6 +1,7 @@
 import type { VaccineArtifact } from './types.js';
 import { canonical } from './ledger.js';
 import { sha256 } from './hash.js';
+import { extractTerms } from './features.js';
 
 /**
  * Structural and value limits a vaccine must satisfy before any scan runs.
@@ -22,6 +23,7 @@ export const VACCINE_LIMITS = {
 
 const RULE_SOURCES = new Set(['seeded', 'bred', 'mutated']);
 const ID = /^[A-Za-z0-9._:-]+$/;
+const SENSORS = new Set(['__has_url__', '__shell_surface__', '__credential_surface__', '__instruction_override__', '__exfil_motif__', '__non_ascii__', '__zero_width_literal__', '__zero_width_actual__', '__long_base64ish__']);
 
 export class VaccineValidationError extends Error {
   constructor(readonly errors: string[]) {
@@ -46,7 +48,7 @@ export function validateVaccine(input: unknown): VaccineValidation {
   if (policy['kind'] !== 'weighted-evidence') errors.push('unsupported policy kind');
   const rules = policy['rules'];
   if (!Array.isArray(rules)) return { ok: false, errors: [...errors, 'policy.rules is not an array'] };
-  if (rules.length < VACCINE_LIMITS.minRules || rules.length > VACCINE_LIMITS.maxRules) errors.push(`rule count ${rules.length} outside [${VACCINE_LIMITS.minRules}, ${VACCINE_LIMITS.maxRules}]`);
+  if (rules.length < VACCINE_LIMITS.minRules || rules.length > VACCINE_LIMITS.maxRules) return { ok: false, errors: [...errors, `rule count ${rules.length} outside [${VACCINE_LIMITS.minRules}, ${VACCINE_LIMITS.maxRules}]`] };
   const ids = new Set<string>();
   const terms = new Set<string>();
   let totalWeight = 0;
@@ -56,6 +58,7 @@ export function validateVaccine(input: unknown): VaccineValidation {
     if (typeof id !== 'string' || !ID.test(id) || id.length > VACCINE_LIMITS.maxIdLength) errors.push(`rule ${i}: invalid id`);
     else if (ids.has(id)) errors.push(`rule ${i}: duplicate id ${id}`); else ids.add(id);
     if (typeof term !== 'string' || term.length === 0 || term.length > VACCINE_LIMITS.maxTermLength || term !== term.normalize('NFKC').toLowerCase()) errors.push(`rule ${i}: invalid term`);
+    else if (!SENSORS.has(term) && !extractTerms(term).has(term)) errors.push(`rule ${i}: term cannot be emitted by the extractor`);
     else if (terms.has(term)) errors.push(`rule ${i}: duplicate term`); else terms.add(term);
     if (typeof weight !== 'number' || !Number.isFinite(weight) || weight < VACCINE_LIMITS.minWeight || weight > VACCINE_LIMITS.maxWeight) errors.push(`rule ${i}: weight outside [${VACCINE_LIMITS.minWeight}, ${VACCINE_LIMITS.maxWeight}]`);
     else totalWeight += weight;
@@ -66,6 +69,20 @@ export function validateVaccine(input: unknown): VaccineValidation {
   if (typeof threshold !== 'number' || !Number.isFinite(threshold) || threshold <= 0) errors.push('threshold must be a positive finite number');
   else if (totalWeight > 0 && threshold > totalWeight) errors.push('threshold exceeds total rule weight: policy could never flag anything');
   const champion = input['champion'];
+  if (!isObj(champion) || typeof champion['strainId'] !== 'string' || !Number.isSafeInteger(champion['generation']) || (champion['generation'] as number) < 0 || !Array.isArray(champion['parentIds'])) errors.push('invalid champion metadata');
+  for (const name of ['validation', 'holdout']) {
+    const metrics = input[name];
+    if (!isObj(metrics)) { errors.push(`${name} metrics missing`); continue; }
+    for (const key of ['tp', 'tn', 'fp', 'fn', 'sampleCount']) {
+      if (!Number.isSafeInteger(metrics[key]) || (metrics[key] as number) < 0) errors.push(`${name}.${key} must be a nonnegative integer`);
+    }
+    for (const key of ['precision', 'recall', 'specificity', 'f1', 'balancedAccuracy', 'falsePositiveRate']) {
+      const n = metrics[key];
+      if (typeof n !== 'number' || !Number.isFinite(n) || n < 0 || n > 1) errors.push(`${name}.${key} must be a finite rate`);
+    }
+    if (typeof metrics['fitness'] !== 'number' || !Number.isFinite(metrics['fitness']) || typeof metrics['mcc'] !== 'number' || !Number.isFinite(metrics['mcc']) || Math.abs(metrics['mcc']) > 1) errors.push(`${name} invalid fitness or mcc`);
+    if ((metrics['tp'] as number) + (metrics['tn'] as number) + (metrics['fp'] as number) + (metrics['fn'] as number) !== metrics['sampleCount']) errors.push(`${name} sample count disagrees with confusion matrix`);
+  }
   if (isObj(champion) && typeof threshold === 'number' && champion['threshold'] !== threshold) errors.push('champion.threshold disagrees with policy.threshold');
   if (isObj(champion) && champion['ruleCount'] !== rules.length) errors.push('champion.ruleCount disagrees with policy.rules');
   return { ok: errors.length === 0, errors };

@@ -1,6 +1,6 @@
 # Test results — v0.3.0 candidate
 
-Recorded on branch `hardening/v0.3.0`, Node 22, `npm install && npm test`: **64 / 64 pass** (18 carried from v0.2.0, 46 new in `test/v030.test.ts`).
+Initial candidate recorded on branch `hardening/v0.3.0`, Node 22, `npm install && npm test`: **64 / 64 pass** (18 carried from v0.2.0, 46 new in `test/v030.test.ts`). The local re-audit result is recorded below; this original baseline transcript is retained.
 
 Additional evidence:
 - `npm run verify:ledger` (pinned to the v0.2.0 head, anchor, entry count and file SHA-256): valid.
@@ -142,3 +142,17 @@ Re-run against OASB commit `fddf2b1379c5597a3e83a3c6f7833b8e5613a04e`, corpus SH
 | Ledger reproducible across runs | no | yes |
 
 The remediation did not move the science. That was the intent, and it was checked rather than assumed.
+
+## Unreleased v0.3.0 re-audit
+
+Clean strict Node test pipeline on Node 22.23.5: **85 / 85 pass**. Original OASB experiments rerun at pinned commit `fddf2b1379c5597a3e83a3c6f7833b8e5613a04e`: final run 10/10 artifacts and five-fold cross-validation 7/7 artifacts byte-identical. Champion remains `def-g24-c7fbd215ef`; out-of-fold recall remains 220/270.
+
+## Smoke / property suite (v0.3.0 candidate, test/smoke.test.ts)
+
+Run at `SMOKE_SCALE=10` (CI runs scale 1): 6/6 pass, 126 s.
+- Scanner: 200,000 random/hostile inputs (lone surrogates, bidi, NUL, zero-width, ligatures), each scanned twice — deterministic, confidence always inside its band, `unknown` always carries confidence 0 and an error; non-string and >1 MiB UTF-8 inputs return `unknown`. Max-size input scans in ~0.1 s.
+- Vaccine mutation: 30,000 corrupted vaccines; every one the validator rejects is refused by the scanner; none crash a scan.
+- Ledger: 1,000 random single-field tampers of the published 4,454-entry ledger — all detected; truncation fails against the pinned count.
+- Deployment: 40,000 random operations (plan/activate/promote with good and forged credentials, labelled traffic, forged fingerprints, clock jumps, restarts) — zero blocks without authorized approval, no restart resumed enforcement, unpinned campaigns never enforced, ledger valid at the end.
+- Found and fixed: `decide()` threw on a missing/non-string request key in canary; it now returns `hold`.
+- Measured: durable `observe()` with fsync ≈ 3,900/s (full checkpoint rewrite per observation) — adequate for pre-execution artifact scanning, not for high-volume traffic.

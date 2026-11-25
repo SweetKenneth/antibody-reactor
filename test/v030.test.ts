@@ -161,31 +161,31 @@ const approval: Approval = { approver: 'governor', role: 'governor', reason: 're
 const allowOk: Authorizer = a => a.credential === 'ok';
 function ctl(auth?: Authorizer, now = { t: 0 }) { return { c: new DeploymentController(auth, () => now.t), now }; }
 function feed(c: DeploymentController, id: string, benign: number, flagged: number, mal: number, detected: number) {
-  for (let i = 0; i < benign; i++) c.observe(id, { verdict: i < flagged ? 'malicious' : 'benign', label: 'benign' });
-  for (let i = 0; i < mal; i++) c.observe(id, { verdict: i < detected ? 'malicious' : 'benign', label: 'malicious' });
+  for (let i = 0; i < benign; i++) c.observe(id, { verdict: i < flagged ? 'malicious' : 'benign', label: 'benign', policyFingerprint: policyFingerprint(VAX) });
+  for (let i = 0; i < mal; i++) c.observe(id, { verdict: i < detected ? 'malicious' : 'benign', label: 'malicious', policyFingerprint: policyFingerprint(VAX) });
 }
 test('P3 default authorizer refuses activation: nothing deploys without explicit authority', () => {
-  const { c } = ctl(); const k = c.plan(VAX);
+  const { c } = ctl(); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint });
   assert.throws(() => c.activate(k.id, approval), /refused/);
   assert.equal(c.get(k.id).stage, 'planning');
   assert.ok(c.ledger.all().some(e => e.type === 'approval.refused'));
 });
 test('P3 an authorizer that throws counts as refusal', () => {
-  const { c } = ctl(() => { throw new Error('x'); }); const k = c.plan(VAX);
+  const { c } = ctl(() => { throw new Error('x'); }); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint });
   assert.throws(() => c.activate(k.id, approval), /refused/);
 });
 test('P3 approval without approver or reason is refused', () => {
-  const { c } = ctl(allowOk); const k = c.plan(VAX);
+  const { c } = ctl(allowOk); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint });
   assert.throws(() => c.activate(k.id, { ...approval, approver: '' }));
   assert.throws(() => c.activate(k.id, { ...approval, reason: '' }));
 });
 test('P3 shadow never blocks, even a malicious or unknown verdict', () => {
-  const { c } = ctl(allowOk); const k = c.plan(VAX); c.activate(k.id, approval);
+  const { c } = ctl(allowOk); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint }); c.activate(k.id, approval);
   assert.equal(c.decide(k.id, { verdict: 'malicious' }, 'r1'), 'log');
   assert.equal(c.decide(k.id, { verdict: 'unknown' }, 'r1'), 'log');
 });
 test('P3 promotion needs evidence first, then an authorized approval; never automatic', () => {
-  const { c } = ctl(allowOk); const k = c.plan(VAX); c.activate(k.id, approval);
+  const { c } = ctl(allowOk); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint }); c.activate(k.id, approval);
   assert.throws(() => c.promote(k.id, approval), /blocked/);
   feed(c, k.id, 500, 0, 30, 30);
   assert.equal(c.get(k.id).stage, 'shadow', 'evidence alone does not promote');
@@ -193,53 +193,53 @@ test('P3 promotion needs evidence first, then an authorized approval; never auto
   assert.equal(c.promote(k.id, approval).stage, 'canary');
 });
 test('P3 envelope breach in canary rolls back automatically and stops blocking', () => {
-  const { c } = ctl(allowOk); const k = c.plan(VAX); c.activate(k.id, approval);
+  const { c } = ctl(allowOk); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint }); c.activate(k.id, approval);
   feed(c, k.id, 500, 0, 30, 30); c.promote(k.id, approval);
   feed(c, k.id, 100, 20, 0, 0);
   assert.equal(c.get(k.id).stage, 'rolled_back');
   assert.equal(c.decide(k.id, { verdict: 'malicious' }, 'r'), 'log');
 });
 test('P3 recall collapse in general rolls back', () => {
-  const { c } = ctl(allowOk); const k = c.plan(VAX); c.activate(k.id, approval);
+  const { c } = ctl(allowOk); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint }); c.activate(k.id, approval);
   feed(c, k.id, 500, 0, 30, 30); c.promote(k.id, approval);
   feed(c, k.id, 500, 0, 30, 30); c.promote(k.id, approval);
   assert.equal(c.get(k.id).stage, 'general');
-  assert.equal(c.decide(k.id, { verdict: 'unknown' }, 'r'), 'hold', 'unknown is held for a human, not allowed');
+  assert.equal(c.decide(k.id, { verdict: 'unknown', policyFingerprint: policyFingerprint(VAX) }, 'r'), 'hold', 'unknown is held for a human, not allowed');
   feed(c, k.id, 0, 0, 10, 0);
   assert.equal(c.get(k.id).stage, 'rolled_back');
 });
 test('P3 a breached shadow cannot be promoted', () => {
-  const { c } = ctl(allowOk); const k = c.plan(VAX); c.activate(k.id, approval);
+  const { c } = ctl(allowOk); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint }); c.activate(k.id, approval);
   feed(c, k.id, 500, 100, 30, 30);
   assert.match(c.promotionBlockers(k.id).join(), /envelope/);
 });
 test('P3 campaigns expire (24h default TTL from the antibody generator) and stop enforcing', () => {
-  const now = { t: 0 }; const { c } = ctl(allowOk, now); const k = c.plan(VAX); c.activate(k.id, approval);
+  const now = { t: 0 }; const { c } = ctl(allowOk, now); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint }); c.activate(k.id, approval);
   now.t = 24 * 60 * 60 * 1000;
   assert.equal(c.get(k.id).stage, 'expired');
   assert.equal(c.decide(k.id, { verdict: 'malicious' }, 'r'), 'log');
 });
 test('P3 at most three concurrent campaigns (planCampaign limit)', () => {
   const { c } = ctl(allowOk);
-  for (let i = 0; i < MAX_CONCURRENT_CAMPAIGNS; i++) c.plan(VAX);
-  assert.throws(() => c.plan(VAX), /concurrent/);
+  for (let i = 0; i < MAX_CONCURRENT_CAMPAIGNS; i++) c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint });
+  assert.throws(() => c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint }), /concurrent/);
 });
 test('P3 rollback and revoke need no approval; rolled-back cannot be promoted', () => {
-  const { c } = ctl(allowOk); const k = c.plan(VAX); c.activate(k.id, approval);
+  const { c } = ctl(allowOk); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint }); c.activate(k.id, approval);
   assert.equal(c.rollback(k.id, 'operator').stage, 'rolled_back');
   assert.throws(() => c.promote(k.id, approval));
   assert.equal(c.revoke(k.id, 'done').stage, 'revoked');
 });
 test('P3 canary blocks only its deterministic traffic bucket', () => {
-  const { c } = ctl(allowOk); const k = c.plan(VAX, { canaryPercent: 10 }); c.activate(k.id, approval);
+  const { c } = ctl(allowOk); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint, canaryPercent: 10 }); c.activate(k.id, approval);
   feed(c, k.id, 500, 0, 30, 30); c.promote(k.id, approval);
   let blocked = 0;
-  for (let i = 0; i < 2000; i++) if (c.decide(k.id, { verdict: 'malicious' }, `req-${i}`) === 'block') blocked++;
+  for (let i = 0; i < 2000; i++) if (c.decide(k.id, { verdict: 'malicious', policyFingerprint: policyFingerprint(VAX) }, `req-${i}`) === 'block') blocked++;
   assert.ok(blocked > 100 && blocked < 300, `blocked ${blocked}/2000`);
-  assert.equal(c.decide(k.id, { verdict: 'malicious' }, 'req-7'), c.decide(k.id, { verdict: 'malicious' }, 'req-7'));
+  assert.equal(c.decide(k.id, { verdict: 'malicious', policyFingerprint: policyFingerprint(VAX) }, 'req-7'), c.decide(k.id, { verdict: 'malicious', policyFingerprint: policyFingerprint(VAX) }, 'req-7'));
 });
 test('P3 the deployment ledger verifies and never stores credentials', () => {
-  const { c } = ctl(allowOk); const k = c.plan(VAX); c.activate(k.id, approval);
+  const { c } = ctl(allowOk); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint }); c.activate(k.id, approval);
   assert.equal(c.ledger.verify().valid, true);
   assert.ok(!JSON.stringify(c.ledger.all()).includes('"credential"'));
 });
@@ -253,4 +253,113 @@ test('P4 committed independent-evaluation results recompute exactly from the com
     assert.deepEqual(evaluateFrozen(VAX, set.name, sha, samples), set);
   }
   assert.equal(committed.vaccine.policyFingerprint, PINS.vaccine.policyFingerprint);
+});
+
+// --- v0.3.0 re-audit regressions ----------------------------------------------
+import { mkdtempSync, writeFileSync as writeFixture } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { EvidenceLedger } from '../src/ledger.js';
+import { FileDeploymentStore } from '../src/deployment-store.js';
+import { readBoundedText } from '../src/bounded-read.js';
+const FP = policyFingerprint(VAX);
+const okObs = (verdict: 'malicious' | 'benign' | 'unknown', label?: 'malicious' | 'benign') => label ? { verdict, label, policyFingerprint: FP } : { verdict, policyFingerprint: FP };
+
+test('R1 unreachable vaccine terms are refused', () => {
+  for (const term of ['the', 'agent', '☃', 'hello world again']) {
+    const v = clone(); v.policy.rules = [{ id: 'r', term, weight: 1, source: 'bred' }]; v.policy.threshold = 1; v.champion.threshold = 1; v.champion.ruleCount = 1;
+    assert.equal(validateVaccine(v).ok, false, term);
+  }
+});
+test('R2 malformed or mutable envelopes cannot weaken controls', () => {
+  const { c } = ctl(allowOk);
+  assert.throws(() => c.plan(VAX, { canaryPercent: '10' as unknown as number }));
+  assert.throws(() => c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint, envelope: { maxFalsePositiveRate: NaN, minRecall: 1, maxUnknownRate: 0, minLabelledBenign: 1, minLabelledMalicious: 1 } }));
+  const env = { maxFalsePositiveRate: 0, minRecall: 1, maxUnknownRate: 0, minLabelledBenign: 1, minLabelledMalicious: 1 };
+  const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint, envelope: env }); env.minRecall = 0;
+  assert.equal(c.get(k.id).envelope.minRecall, 1); assert.equal(c.ledger.verify().valid, true);
+});
+test('R3 current bad performance blocks promotion before warm-up', () => {
+  const { c } = ctl(allowOk); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint, envelope: { maxFalsePositiveRate: 0, minRecall: 1, maxUnknownRate: 0, minLabelledBenign: 1, minLabelledMalicious: 1 } });
+  c.activate(k.id, approval); c.observe(k.id, okObs('malicious', 'benign')); c.observe(k.id, okObs('benign', 'malicious'));
+  assert.throws(() => c.promote(k.id, approval), /blocked/);
+});
+test('R4 expiry releases capacity and planning campaigns expire', () => {
+  const now = { t: 0 }; const { c } = ctl(allowOk, now);
+  const ids = Array.from({ length: 3 }, () => c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint, ttlMs: 1 }).id); now.t = 1;
+  const first = ids[0]; if (!first) throw new Error('missing fixture campaign');
+  assert.doesNotThrow(() => c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint })); assert.equal(c.get(first).stage, 'expired');
+  assert.throws(() => c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint, ttlMs: Infinity }));
+  assert.throws(() => c.plan(VAX, { ttlMs: 24 * 60 * 60 * 1000 + 1 }));
+});
+test('R5 ledger owns appended payloads', () => {
+  const l = new EvidenceLedger(); const p = { outcome: 'accepted' }; const e = l.append('x', p);
+  p.outcome = 'changed'; (e.payload as typeof p).outcome = 'changed'; assert.equal(l.verify().valid, true);
+});
+test('R6 reentrant approval cannot resurrect a revoked campaign', () => {
+  const c = new DeploymentController((_a, action, v) => { if (action === 'promote') c.revoke(v.id, 'emergency'); return true; }, () => 0);
+  const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint, envelope: { maxFalsePositiveRate: 0, minRecall: 1, maxUnknownRate: 0, minLabelledBenign: 1, minLabelledMalicious: 1 } });
+  c.activate(k.id, approval); c.observe(k.id, okObs('benign', 'benign')); c.observe(k.id, okObs('malicious', 'malicious'));
+  assert.throws(() => c.promote(k.id, approval)); assert.notEqual(c.get(k.id).stage, 'general');
+});
+test('R7 policy-mismatched and malformed verdicts never count or allow under enforcement', () => {
+  const { c } = ctl(allowOk); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint, envelope: { maxFalsePositiveRate: 0, minRecall: 1, maxUnknownRate: 0, minLabelledBenign: 1, minLabelledMalicious: 1 } }); c.activate(k.id, approval);
+  assert.throws(() => c.observe(k.id, { verdict: 'benign', label: 'benign', policyFingerprint: 'other' }));
+  assert.throws(() => c.observe(k.id, { verdict: 'error', label: 'benign', policyFingerprint: FP } as never));
+  c.observe(k.id, okObs('benign', 'benign')); c.observe(k.id, okObs('malicious', 'malicious')); c.promote(k.id, approval); c.observe(k.id, okObs('benign', 'benign')); c.observe(k.id, okObs('malicious', 'malicious')); c.promote(k.id, approval);
+  assert.equal(c.decide(k.id, { verdict: 'error' } as never, 'r'), 'hold');
+  assert.equal(c.decide(k.id, { verdict: 'benign', policyFingerprint: 'other' }, 'r'), 'hold');
+});
+test('R8 durable state restores only from an external digest and rejects tampering', () => {
+  const file = path.join(mkdtempSync(path.join(tmpdir(), 'ar-')), 'state.json'); const store = new FileDeploymentStore(file);
+  const c = new DeploymentController(allowOk, () => 0, undefined, store); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint }); c.activate(k.id, approval);
+  const restored = DeploymentController.restore(new FileDeploymentStore(file, store.digest()).load(), allowOk, () => 0);
+  assert.equal(restored.get(k.id).stage, 'shadow');
+  writeFixture(file, '{}'); assert.throws(() => new FileDeploymentStore(file, store.digest()).load(), /trusted digest/);
+});
+test('R9 bounded reads refuse oversize files before decoding', async () => {
+  const file = path.join(mkdtempSync(path.join(tmpdir(), 'ar-')), 'x'); writeFixture(file, 'ab');
+  await assert.rejects(readBoundedText(file, 1), /at most/);
+});
+test('R10 malformed trust releases and duplicate versions are refused', () => {
+  const r = PINS; assert.throws(() => parseTrusted({ schema: 'shpbl.antibody-reactor.trusted-fingerprints/v1', releases: [r, r] }));
+  assert.throws(() => parseTrusted({ schema: 'shpbl.antibody-reactor.trusted-fingerprints/v1', releases: [null] }));
+});
+
+
+test('R11 unpinned vaccine remains shadow-only even with good observations', () => {
+  const { c } = ctl(allowOk); const k = c.plan(clone()); c.activate(k.id, approval);
+  feed(c, k.id, 500, 0, 30, 30); assert.throws(() => c.promote(k.id, approval), /fingerprint-pinned/);
+});
+test('R12 persistence failure faults the controller before any further decision', () => {
+  let fail = false;
+  const c = new DeploymentController(allowOk, () => 0, undefined, { save: () => { if (fail) throw new Error('disk failed'); } });
+  const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint }); fail = true;
+  assert.throws(() => c.activate(k.id, approval), /disk failed/);
+  assert.throws(() => c.decide(k.id, { verdict: 'benign', policyFingerprint: FP }, 'r'), /faulted/);
+});
+test('R13 impossible checkpoint metrics are refused', () => {
+  const { c } = ctl(allowOk); c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint });
+  const state = c.snapshot(); const campaign = state.campaigns[0]; if (!campaign) throw new Error('fixture missing');
+  campaign.stats = { scans: 1, unknown: 1, detected: 1, flaggedBenign: 0, labelledMalicious: 1, labelledBenign: 0 };
+  assert.throws(() => DeploymentController.restore(state), /monitoring checkpoint/);
+});
+test('R14 restart never resumes general enforcement automatically', () => {
+  const { c } = ctl(allowOk); const k = c.plan(VAX, { expectedPolicyFingerprint: PINS.vaccine.policyFingerprint, envelope: { maxFalsePositiveRate: 0, minRecall: 1, maxUnknownRate: 0, minLabelledBenign: 1, minLabelledMalicious: 1 } });
+  c.activate(k.id, approval);
+  for (let i = 0; i < 2; i++) { c.observe(k.id, okObs('benign', 'benign')); c.observe(k.id, okObs('malicious', 'malicious')); c.promote(k.id, approval); }
+  const restored = DeploymentController.restore(c.snapshot(), allowOk, () => 0);
+  assert.equal(restored.get(k.id).stage, 'shadow'); assert.equal(restored.get(k.id).stats.scans, 0);
+  assert.equal(restored.decide(k.id, { verdict: 'malicious', policyFingerprint: FP }, 'r'), 'log');
+});
+test('R15 conflicting checkpoint writers fail rather than overwrite', () => {
+  const file = path.join(mkdtempSync(path.join(tmpdir(), 'ar-')), 'state.json'); const first = new FileDeploymentStore(file);
+  first.save({ first: true }); const second = new FileDeploymentStore(file, first.digest());
+  first.save({ first: 'new' }); assert.throws(() => second.save({ stale: true }), /concurrent/);
+  assert.throws(() => second.save({ stale: true }), /faulted/);
+});
+test('R16 independent input refuses duplicate IDs and one-class evaluation', async () => {
+  const file = path.join(mkdtempSync(path.join(tmpdir(), 'ar-')), 'samples.json');
+  writeFixture(file, JSON.stringify([{ id: 'same', label: 'benign', content: 'hello' }, { id: 'same', label: 'malicious', content: 'curl' }]));
+  await assert.rejects(loadSamples(file), /malformed/);
+  writeFixture(file, JSON.stringify([{ id: 'one', label: 'benign', content: 'hello' }])); await assert.rejects(loadSamples(file), /both classes/);
 });

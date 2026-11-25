@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import path from 'node:path';
-import { readFile } from 'node:fs/promises';
+import { readBoundedText } from './bounded-read.js';
 import { runReactor, DEFAULT_CONFIG } from './reactor.js';
 import { verifyLedgerEntries } from './ledger.js';
 import { sha256 } from './hash.js';
@@ -40,7 +40,8 @@ async function runCommand(): Promise<void> {
       corpusMode: process.argv.includes('--all-malicious') ? 'all' : DEFAULT_CONFIG.corpusMode,
     },
   });
-  const m = result.champion.holdout!.metrics;
+  const m = result.champion.holdout?.metrics;
+  if (!m) throw new Error('holdout metrics missing');
   console.log('');
   console.log('SHPBL ANTIBODY REACTOR');
   console.log('======================');
@@ -70,7 +71,7 @@ async function trustedPins(): Promise<TrustedRelease | undefined> {
 async function verifyCommand(): Promise<void> {
   const ledgerPath = arg('--ledger');
   if (!ledgerPath) throw new Error('--ledger is required');
-  const raw = await readFile(path.resolve(ledgerPath), 'utf8');
+  const raw = await readBoundedText(path.resolve(ledgerPath), 64 * 1024 * 1024);
   const fileSha256 = sha256(raw);
   const pins = await trustedPins();
   const expectAnchor = arg('--expect-anchor') ?? pins?.ledger.anchor;
@@ -78,7 +79,7 @@ async function verifyCommand(): Promise<void> {
   const expectEntries = num('--expect-entries') ?? pins?.ledger.entries;
   let entries: unknown;
   try { entries = JSON.parse(raw); } catch { entries = undefined; }
-  const check = verifyLedgerEntries(entries, expectAnchor, { expectedHead: expectHead, expectedEntries: expectEntries });
+  const check = verifyLedgerEntries(entries, expectAnchor, { ...(expectHead === undefined ? {} : { expectedHead: expectHead }), ...(expectEntries === undefined ? {} : { expectedEntries: expectEntries }) });
   const fileMatches = pins ? fileSha256 === pins.ledger.fileSha256 : undefined;
   if (fileMatches === false) { check.valid = false; check.reason ??= 'ledger file SHA-256 does not match trusted pin'; }
   const pinned = expectAnchor !== undefined && expectHead !== undefined;
@@ -91,7 +92,7 @@ async function verifyCommand(): Promise<void> {
 }
 
 async function loadVaccine(vaccinePath: string): Promise<{ vaccine: VaccineArtifact; fileSha256: string; pinned: boolean }> {
-  const raw = await readFile(path.resolve(vaccinePath), 'utf8');
+  const raw = await readBoundedText(path.resolve(vaccinePath), 2 * 1024 * 1024);
   const fileSha256 = sha256(raw);
   const pins = await trustedPins();
   const expected = arg('--vaccine-sha256') ?? pins?.vaccine.fileSha256;
@@ -111,8 +112,10 @@ async function scanCommand(): Promise<void> {
   let pinned = false;
   try { ({ vaccine, pinned } = await loadVaccine(vaccinePath)); }
   catch (e) { console.error(e instanceof Error ? e.message : e); process.exitCode = 4; return; }
-  const content = await readFile(path.resolve(filePath), 'utf8');
   const maxBytes = num('--max-bytes');
+  let content: string;
+  try { content = await readBoundedText(path.resolve(filePath), maxBytes ?? 1024 * 1024); }
+  catch (e) { console.log(JSON.stringify({ verdict: 'unknown', error: e instanceof Error ? e.message : 'input read failed', mode: 'advisory' })); process.exitCode = 3; return; }
   const scanner = new AntibodyReactorScanner(vaccine, maxBytes === undefined ? {} : { maxInputBytes: maxBytes });
   const result = scanner.scanDetailed(content, path.basename(filePath));
   console.log(JSON.stringify({ ...result, policyFingerprint: scanner.policyFingerprint, mode: 'advisory: this command never enforces', integrity: pinned ? 'pinned' : 'unpinned: structure validated, but a plausible hand-edited policy would also pass; pin with --vaccine-sha256 or --trusted' }, null, 2));
@@ -123,8 +126,8 @@ async function validateVaccineCommand(): Promise<void> {
   const vaccinePath = arg('--vaccine');
   if (!vaccinePath) throw new Error('--vaccine is required');
   try {
-    const { vaccine, fileSha256 } = await loadVaccine(vaccinePath);
-    console.log(JSON.stringify({ ok: true, id: vaccine.id, fileSha256, policyFingerprint: policyFingerprint(vaccine), rules: vaccine.policy.rules.length }, null, 2));
+    const { vaccine, fileSha256, pinned } = await loadVaccine(vaccinePath);
+    console.log(JSON.stringify({ ok: true, integrity: pinned ? 'pinned' : 'unpinned: structure only', id: vaccine.id, fileSha256, policyFingerprint: policyFingerprint(vaccine), rules: vaccine.policy.rules.length }, null, 2));
   } catch (e) {
     console.log(JSON.stringify({ ok: false, error: e instanceof Error ? e.message : String(e) }, null, 2));
     process.exitCode = 4;
@@ -134,15 +137,20 @@ async function validateVaccineCommand(): Promise<void> {
 async function independentCommand(): Promise<void> {
   const vaccinePath = arg('--vaccine');
   const out = arg('--out');
-  const files = process.argv.flatMap((a, i) => a === '--samples' ? [process.argv[i + 1]!] : []);
+  const files = process.argv.flatMap((a, i) => {
+    if (a !== '--samples') return [];
+    const file = process.argv[i + 1];
+    if (!file || file.startsWith('--')) throw new Error('--samples requires a path');
+    return [file];
+  });
   if (!vaccinePath || !files.length) throw new Error('--vaccine and at least one --samples are required');
-  const { vaccine, fileSha256 } = await loadVaccine(vaccinePath);
+  const { vaccine, fileSha256, pinned } = await loadVaccine(vaccinePath);
   const sets = [];
   for (const f of files) {
     const { sha, samples } = await loadSamples(path.resolve(f));
     sets.push(evaluateFrozen(vaccine, path.basename(f), sha, samples));
   }
-  const report = { schema: 'shpbl.antibody-reactor.independent-eval/v1', vaccine: { id: vaccine.id, fileSha256, policyFingerprint: policyFingerprint(vaccine) }, training: 'none: frozen vaccine, no threshold or rule changes', sets };
+  const report = { schema: 'shpbl.antibody-reactor.independent-eval/v1', integrity: pinned ? 'pinned' : 'unpinned: structure only', vaccine: { id: vaccine.id, fileSha256, policyFingerprint: policyFingerprint(vaccine) }, training: 'none: frozen vaccine, no threshold or rule changes', sets };
   if (out) { await mkdir(path.dirname(path.resolve(out)), { recursive: true }); await writeFile(path.resolve(out), JSON.stringify(report, null, 2)); }
   for (const s of sets) console.log(`${s.name}: recall ${s.detected}/${s.malicious} = ${pct(s.recall)}, benign flagged ${s.flaggedBenign}/${s.benign} = ${pct(s.falsePositiveRate)}, unknown ${s.unknown}`);
 }
