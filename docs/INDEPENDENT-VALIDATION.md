@@ -25,3 +25,16 @@ File SHA-256: deepset `bff312e0…55627`, jackhhao `58a87a0d…5b65b`, authored 
 ## Production consequence
 
 The scanner is suitable as an **advisory signal in shadow mode** on OASB-like agent artifacts. It is **not** suitable as a sole gate, and not suitable for chat-prompt injection detection.
+
+## OASB PR #411 hand-written benign fixtures (added after maintainer reply on issue #39)
+
+OASB merged 177 hand-written benign fixtures (`BEN-001`..`BEN-177`) in PR #411, labelled without the scanner under test. The frozen v0.2.0 champion was run against them unchanged (no re-breeding, no tuning).
+
+| Measure | Result |
+|---|---|
+| Benign fixtures flagged | **52 / 177 (29.38% FPR)** |
+| Benign fixtures passed | 125 / 177 |
+| Categorized attacks caught (the 270 fixtures the vaccine was bred on) | 220 / 270 (81.48%) |
+| Precision / F1 (220 TP, 52 FP, 50 FN) | 80.88% / 81.18% |
+
+Only the false-positive rate is out-of-sample. The 81.48% recall is on the corpus that was the selection pressure, so the F1 mixes an in-sample recall with an out-of-sample FPR and must not be read as a held-out score. A 29% FPR on clean hand-written artifacts confirms the scanner is advisory/shadow-only.
