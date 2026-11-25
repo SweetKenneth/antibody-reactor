@@ -1,5 +1,7 @@
 # SHPBL ANTIBODY REACTOR
 
+> **v0.3.0 candidate (branch `hardening/v0.3.0`, unreleased).** Fail-closed scanning, vaccine validation, pinned evidence verification and a human-gated shadow/canary/rollback controller. Independent testing of the frozen v0.2.0 vaccine found it **does not generalise** beyond OASB-shaped agent artifacts (0/60 chat prompt injections, 49/139 jailbreaks, 6/24 hand-written agent attacks). Use it as an advisory signal in shadow mode only. See `docs/AUDIT-v0.3.0.md`, `docs/INDEPENDENT-VALIDATION.md`, `docs/PRODUCTION-SAFEGUARDS.md`. Everything below describes the published v0.2.0 release.
+
 > **The security policies reproduce. OASB decides which offspring survive.**
 
 Antibody Reactor is an evolutionary defense laboratory composed from SHPBL/CMPSBL capabilities and driven by an external security corpus. It does not start with a hand-written scanner ruleset. It discovers candidate threat evidence from a training environment, creates populations of defensive strains, breeds them through crossover and mutation, rehearses every child, kills regressions, preserves the dead in a fossil record, and promotes one surviving descendant into a deployable **vaccine** artifact.

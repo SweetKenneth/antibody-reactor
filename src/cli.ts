@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 import path from 'node:path';
-import { readFile } from 'node:fs/promises';
+import { readBoundedText } from './bounded-read.js';
 import { runReactor, DEFAULT_CONFIG } from './reactor.js';
 import { verifyLedgerEntries } from './ledger.js';
+import { sha256 } from './hash.js';
+import { validateVaccine, policyFingerprint } from './vaccine-validate.js';
+import { loadTrustedRelease, type TrustedRelease } from './trust.js';
+import { loadSamples, evaluateFrozen } from './independent.js';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { AntibodyReactorScanner } from './oasb-scanner.js';
 import { runCrossValidation } from './crossvalidate.js';
 import type { LedgerEntry, VaccineArtifact } from './types.js';
@@ -35,7 +40,8 @@ async function runCommand(): Promise<void> {
       corpusMode: process.argv.includes('--all-malicious') ? 'all' : DEFAULT_CONFIG.corpusMode,
     },
   });
-  const m = result.champion.holdout!.metrics;
+  const m = result.champion.holdout?.metrics;
+  if (!m) throw new Error('holdout metrics missing');
   console.log('');
   console.log('SHPBL ANTIBODY REACTOR');
   console.log('======================');
@@ -54,25 +60,100 @@ async function runCommand(): Promise<void> {
   console.log(`Artifacts       : ${out}`);
 }
 
+async function trustedPins(): Promise<TrustedRelease | undefined> {
+  const file = arg('--trusted');
+  if (!file) return undefined;
+  const release = arg('--release');
+  if (!release) throw new Error('--trusted requires --release <version>');
+  return loadTrustedRelease(path.resolve(file), release);
+}
+
 async function verifyCommand(): Promise<void> {
   const ledgerPath = arg('--ledger');
   if (!ledgerPath) throw new Error('--ledger is required');
-  const entries = JSON.parse(await readFile(path.resolve(ledgerPath), 'utf8')) as LedgerEntry[];
-  const check = verifyLedgerEntries(entries);
-  console.log(JSON.stringify({ file: path.resolve(ledgerPath), entries: entries.length, ...check }, null, 2));
+  const raw = await readBoundedText(path.resolve(ledgerPath), 64 * 1024 * 1024);
+  const fileSha256 = sha256(raw);
+  const pins = await trustedPins();
+  const expectAnchor = arg('--expect-anchor') ?? pins?.ledger.anchor;
+  const expectHead = arg('--expect-head') ?? pins?.ledger.head;
+  const expectEntries = num('--expect-entries') ?? pins?.ledger.entries;
+  let entries: unknown;
+  try { entries = JSON.parse(raw); } catch { entries = undefined; }
+  const check = verifyLedgerEntries(entries, expectAnchor, { ...(expectHead === undefined ? {} : { expectedHead: expectHead }), ...(expectEntries === undefined ? {} : { expectedEntries: expectEntries }) });
+  const fileMatches = pins ? fileSha256 === pins.ledger.fileSha256 : undefined;
+  if (fileMatches === false) { check.valid = false; check.reason ??= 'ledger file SHA-256 does not match trusted pin'; }
+  const pinned = expectAnchor !== undefined && expectHead !== undefined;
+  console.log(JSON.stringify({
+    file: path.resolve(ledgerPath), fileSha256, entries: Array.isArray(entries) ? entries.length : null, ...check, fileMatches,
+    trust: pinned ? 'pinned' : 'self-consistency only: the chain is internally valid but nothing ties it to a trusted head; a rewritten and re-chained ledger would also pass',
+  }, null, 2));
   if (!check.valid) process.exitCode = 1;
+  else if (!pinned && process.argv.includes('--require-pins')) process.exitCode = 1;
+}
+
+async function loadVaccine(vaccinePath: string): Promise<{ vaccine: VaccineArtifact; fileSha256: string; pinned: boolean }> {
+  const raw = await readBoundedText(path.resolve(vaccinePath), 2 * 1024 * 1024);
+  const fileSha256 = sha256(raw);
+  const pins = await trustedPins();
+  const expected = arg('--vaccine-sha256') ?? pins?.vaccine.fileSha256;
+  if (expected !== undefined && expected !== fileSha256) throw new Error(`vaccine file SHA-256 ${fileSha256} does not match trusted pin ${expected}`);
+  const vaccine = JSON.parse(raw) as VaccineArtifact;
+  const v = validateVaccine(vaccine);
+  if (!v.ok) throw new Error(`vaccine rejected: ${v.errors.join('; ')}`);
+  if (pins && policyFingerprint(vaccine) !== pins.vaccine.policyFingerprint) throw new Error('vaccine policy fingerprint does not match trusted pin');
+  return { vaccine, fileSha256, pinned: expected !== undefined };
 }
 
 async function scanCommand(): Promise<void> {
   const vaccinePath = arg('--vaccine');
   const filePath = arg('--file');
   if (!vaccinePath || !filePath) throw new Error('--vaccine and --file are required');
-  const vaccine = JSON.parse(await readFile(path.resolve(vaccinePath), 'utf8')) as VaccineArtifact;
-  const content = await readFile(path.resolve(filePath), 'utf8');
-  const scanner = new AntibodyReactorScanner(vaccine);
-  console.log(JSON.stringify(scanner.scanDetailed(content, path.basename(filePath)), null, 2));
+  let vaccine: VaccineArtifact;
+  let pinned = false;
+  try { ({ vaccine, pinned } = await loadVaccine(vaccinePath)); }
+  catch (e) { console.error(e instanceof Error ? e.message : e); process.exitCode = 4; return; }
+  const maxBytes = num('--max-bytes');
+  let content: string;
+  try { content = await readBoundedText(path.resolve(filePath), maxBytes ?? 1024 * 1024); }
+  catch (e) { console.log(JSON.stringify({ verdict: 'unknown', error: e instanceof Error ? e.message : 'input read failed', mode: 'advisory' })); process.exitCode = 3; return; }
+  const scanner = new AntibodyReactorScanner(vaccine, maxBytes === undefined ? {} : { maxInputBytes: maxBytes });
+  const result = scanner.scanDetailed(content, path.basename(filePath));
+  console.log(JSON.stringify({ ...result, policyFingerprint: scanner.policyFingerprint, mode: 'advisory: this command never enforces', integrity: pinned ? 'pinned' : 'unpinned: structure validated, but a plausible hand-edited policy would also pass; pin with --vaccine-sha256 or --trusted' }, null, 2));
+  if (result.verdict === 'unknown') process.exitCode = 3;
 }
 
+async function validateVaccineCommand(): Promise<void> {
+  const vaccinePath = arg('--vaccine');
+  if (!vaccinePath) throw new Error('--vaccine is required');
+  try {
+    const { vaccine, fileSha256, pinned } = await loadVaccine(vaccinePath);
+    console.log(JSON.stringify({ ok: true, integrity: pinned ? 'pinned' : 'unpinned: structure only', id: vaccine.id, fileSha256, policyFingerprint: policyFingerprint(vaccine), rules: vaccine.policy.rules.length }, null, 2));
+  } catch (e) {
+    console.log(JSON.stringify({ ok: false, error: e instanceof Error ? e.message : String(e) }, null, 2));
+    process.exitCode = 4;
+  }
+}
+
+async function independentCommand(): Promise<void> {
+  const vaccinePath = arg('--vaccine');
+  const out = arg('--out');
+  const files = process.argv.flatMap((a, i) => {
+    if (a !== '--samples') return [];
+    const file = process.argv[i + 1];
+    if (!file || file.startsWith('--')) throw new Error('--samples requires a path');
+    return [file];
+  });
+  if (!vaccinePath || !files.length) throw new Error('--vaccine and at least one --samples are required');
+  const { vaccine, fileSha256, pinned } = await loadVaccine(vaccinePath);
+  const sets = [];
+  for (const f of files) {
+    const { sha, samples } = await loadSamples(path.resolve(f));
+    sets.push(evaluateFrozen(vaccine, path.basename(f), sha, samples));
+  }
+  const report = { schema: 'shpbl.antibody-reactor.independent-eval/v1', integrity: pinned ? 'pinned' : 'unpinned: structure only', vaccine: { id: vaccine.id, fileSha256, policyFingerprint: policyFingerprint(vaccine) }, training: 'none: frozen vaccine, no threshold or rule changes', sets };
+  if (out) { await mkdir(path.dirname(path.resolve(out)), { recursive: true }); await writeFile(path.resolve(out), JSON.stringify(report, null, 2)); }
+  for (const s of sets) console.log(`${s.name}: recall ${s.detected}/${s.malicious} = ${pct(s.recall)}, benign flagged ${s.flaggedBenign}/${s.benign} = ${pct(s.falsePositiveRate)}, unknown ${s.unknown}`);
+}
 
 async function crossValidateCommand(): Promise<void> {
   const corpusPath = arg('--corpus');
@@ -99,7 +180,9 @@ async function main(): Promise<void> {
   if (command === 'crossvalidate') return crossValidateCommand();
   if (command === 'verify') return verifyCommand();
   if (command === 'scan') return scanCommand();
-  console.error('Usage:\n  antibody-reactor run --corpus /path/to/oasb/corpus/v2.json [--out artifacts] [--seed N] [--generations N] [--population N]\n  antibody-reactor crossvalidate --corpus /path/to/oasb/corpus/v2.json [--folds 5]\n  antibody-reactor scan --vaccine vaccine.json --file artifact.md\n  antibody-reactor verify --ledger evidence-ledger.json');
+  if (command === 'validate-vaccine') return validateVaccineCommand();
+  if (command === 'independent') return independentCommand();
+  console.error('Usage:\n  antibody-reactor run --corpus /path/to/oasb/corpus/v2.json [--out artifacts] [--seed N] [--generations N] [--population N]\n  antibody-reactor crossvalidate --corpus /path/to/oasb/corpus/v2.json [--folds 5]\n  antibody-reactor scan --vaccine vaccine.json --file artifact.md [--vaccine-sha256 HEX | --trusted TRUSTED-FINGERPRINTS.json --release V] [--max-bytes N]\n  antibody-reactor validate-vaccine --vaccine vaccine.json [--trusted F --release V]\n  antibody-reactor verify --ledger evidence-ledger.json [--trusted F --release V | --expect-anchor A --expect-head H --expect-entries N] [--require-pins]\n  antibody-reactor independent --vaccine vaccine.json --samples set.json [--samples ...] [--out report.json]');
   process.exitCode = 2;
 }
 

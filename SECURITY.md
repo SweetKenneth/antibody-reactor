@@ -15,3 +15,13 @@ Antibody Reactor is a research instrument for evolving and auditing detection po
 - The evidence ledger is tamper-evident, not tamper-proof. It detects modification of the artifact it is verified against; it does not prevent an untrusted party from producing an entirely new consistent chain — which is why chains are anchored to the corpus hash and seed.
 
 Deploy a vaccine in the staged shadow and canary phases recorded in the artifact before enforcing on production traffic.
+
+
+## Verifying a release (v0.3.0 candidate onward)
+
+```bash
+node dist/cli.js verify --ledger artifacts/oasb-final/evidence-ledger.json --trusted TRUSTED-FINGERPRINTS.json --release 0.2.0 --require-pins
+node dist/cli.js validate-vaccine --vaccine artifacts/oasb-final/vaccine.json --trusted TRUSTED-FINGERPRINTS.json --release 0.2.0
+```
+
+For an independent check, take the pins from the `v0.2.0` tag, the GitHub release or https://shpbl.com/antibody-reactor, not from a working copy you have not verified.

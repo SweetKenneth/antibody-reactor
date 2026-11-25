@@ -78,5 +78,38 @@
     "OASB withdrew its precision, F1, false-positive-rate and flag-rate claims on 2026-08-09 because much of the benign class was labeled using the scanner under test. Benign disagreement here (49/3,975 out-of-fold, 1.23%; 1/608 on the sealed holdout, 0.16%) is retained as evolutionary counter-pressure and is not a false-positive-rate claim.",
     "OASB is used as evolutionary selection pressure. Results are not presented as an independent post-hoc benchmark score, and no comparability to OASB or HackMyAgent historical scores is claimed.",
     "No OASB sample id, expected answer, benchmark filename or fixture identity is hard-coded. Classification depends only on artifact content and the evolved genome."
-  ]
+  ],
+  "candidate_v0_3_0": {
+    "status": "candidate, unreleased, not merged",
+    "branch": "hardening/v0.3.0",
+    "published_release_preserved": "v0.2.0 tag, artifacts, checksums and results untouched; run and cross-validation re-executed byte-identical",
+    "governor_library_access": "read-only; archive SHA-256 re-verified; no body copied",
+    "audit": "docs/AUDIT-v0.3.0.md",
+    "safeguards": "docs/PRODUCTION-SAFEGUARDS.md",
+    "independent_validation": {
+      "report": "docs/INDEPENDENT-VALIDATION.md",
+      "results": "artifacts/independent-v0.3.0/results.json",
+      "training_on_test": false,
+      "deepset_prompt_injections_test": {
+        "detected": 0,
+        "malicious": 60,
+        "flagged_benign": 0,
+        "benign": 56
+      },
+      "jackhhao_jailbreak_test": {
+        "detected": 49,
+        "malicious": 139,
+        "flagged_benign": 1,
+        "benign": 123
+      },
+      "authored_agent_artifacts": {
+        "detected": 6,
+        "malicious": 24,
+        "flagged_benign": 1,
+        "benign": 24,
+        "independent": false
+      }
+    },
+    "trusted_fingerprints": "TRUSTED-FINGERPRINTS.json"
+  }
 }

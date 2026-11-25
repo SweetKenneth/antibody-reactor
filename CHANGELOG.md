@@ -2,6 +2,28 @@
 
 All notable changes to this project are recorded here.
 
+## Unreleased (v0.3.0 candidate)
+- decide() fails closed (`hold`) on malformed canary request keys.
+- Added large-scale smoke/property suite (test/smoke.test.ts, SMOKE_SCALE).
+
+## 0.3.0 — candidate (unreleased, branch `hardening/v0.3.0`)
+
+Production-hardening candidate. **Not a production-readiness declaration.** No published v0.2.0 metric, artifact or checksum changed: the full run and five-fold cross-validation were re-executed after every change and are byte-identical to the committed artifacts. Full audit: `docs/AUDIT-v0.3.0.md`.
+
+### Fixed
+- Scanner confidence reported 0.99 "benign" for empty input. Confidence is now a bounded, explicitly uncalibrated margin heuristic (benign ≤ 0.75, malicious ≤ 0.95). Verdicts unchanged.
+- Vaccines were used without validation; corrupt thresholds, empty rule sets or negated weights silently produced "benign" for obvious attacks. Vaccines are now validated and refused at construction.
+- Vaccines had no integrity binding. Policy fingerprint and file SHA-256 pinning added.
+- No input limits; non-string input crashed. 1 MiB default limit; every failure returns `unknown`, never `benign`.
+- Ledger verification accepted a fully re-chained forgery and an empty ledger, and crashed on malformed entries. Head, anchor, entry-count and file-hash pins added (`TRUSTED-FINGERPRINTS.json`); the local CI workflow now uses pinned verification. The GitHub PR is not updated by this local re-audit.
+- Scanner reported version 0.1.1.
+
+### Added
+- `src/deployment.ts`: shadow → canary → general deployment with human-authorized activation and promotion (default deny), automatic rollback on envelope breach, 24 h TTL, revoke, abort, max 3 concurrent campaigns — lifecycle controls carried by the parent capabilities and lost in the v0.2.0 composition.
+- CLI: `validate-vaccine`, `independent`, pinned `verify` (`--trusted`, `--expect-*`, `--require-pins`), pinned `scan` (`--vaccine-sha256`, `--max-bytes`).
+- Independent validation of the frozen v0.2.0 vaccine on unseen sets (`docs/INDEPENDENT-VALIDATION.md`): 0/60, 49/139 and 6/24 attacks detected. The vaccine does not generalise beyond OASB-shaped artifacts.
+- 46 regression and safeguard tests (`test/v030.test.ts`); 64 total.
+
 ## 0.2.0 — public release
 
 Independent adversarial re-audit of the 0.1.1 package followed by remediation, relicensing and publication. **No published metric changed.** The rebuilt run promotes the same champion (`def-g24-c7fbd215ef`, 41 rules, threshold 11.0459), records the same sealed-holdout recall (29/34 = 85.29%) and the same five-fold out-of-fold attack recall (220/270 = 81.48%) with byte-identical per-category counts. The fixes below were chosen specifically so they could not re-roll the evolutionary trajectory, and that was verified by comparison against the 0.1.1 artifacts rather than assumed.
@@ -50,3 +72,7 @@ Release/submission hardening pass.
 ## 0.1.0 — 2026-09-16
 
 Initial Antibody Reactor composition and recorded OASB evolutionary runs.
+
+## Unreleased v0.3.0 candidate — re-audit fixes
+
+No published v0.2.0 artifact or metric changed. Re-audit fixes cover unreachable vaccine terms, mutable or invalid monitoring envelopes, promotion despite current bad evidence, expiry capacity leaks, mutable ledger entries, reentrant approval, policy-mixed observations, unbounded CLI reads, malformed UTF-8 input, unpinned reporting, malformed trust files, and durable checkpoint failure handling. Pinned CI ledger verification and 21 additional regression or CLI tests were added.

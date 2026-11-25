@@ -1,0 +1,22 @@
+{
+  "schema": "shpbl.antibody-reactor.trusted-fingerprints/v1",
+  "note": "Pins for published releases. Copied from PROVENANCE.json at tag v0.2.0 (commit 6897ac06) and recomputed from the tagged artifacts. For an independent check, fetch this file or the values from the tag or https://shpbl.com/antibody-reactor rather than trusting a working copy.",
+  "releases": [
+    {
+      "version": "0.2.0",
+      "tag": "v0.2.0",
+      "commit": "6897ac0",
+      "vaccine": {
+        "id": "vax-c45267d9173363",
+        "fileSha256": "8837f2bfe3f58f23f0a608d0380113c16cfacb35501e64e0d0773502540f6ded",
+        "policyFingerprint": "1da0784ee730f213aaf105ef86dbdbc9d29cc4b527a190cc5ba5301e0437901c"
+      },
+      "ledger": {
+        "fileSha256": "df56c82780d3af49c714a0f2ad41b45fbdaf14b831d3b6f4e444c92f26eaf98a",
+        "anchor": "anchor:5af96e8814d2b5acb8090bba147c6cfe4d2bf86a5c7495ab11f4614d6da5f9da",
+        "head": "d4ad72536338804cee4815c4e3e345b9103f31c285b4223a590e93782d0c7397",
+        "entries": 4454
+      }
+    }
+  ]
+}
