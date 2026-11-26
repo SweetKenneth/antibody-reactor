@@ -18,13 +18,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-      - run: npm install
+      - run: npm install --no-package-lock
       - name: Strict build
         run: npm run build
+      - name: Compile regression suite
+        run: npx tsc -p tsconfig.test.json
+      - name: Validate README code samples (R19)
+        run: node --test --test-name-pattern='R19' dist-test/test/release-evidence.test.js
+      - name: Validate documentation claims (R20)
+        run: node --test --test-name-pattern='R20' dist-test/test/release-evidence.test.js
+      - name: Validate release checksum test (R18)
+        run: node --test --test-name-pattern='R18' dist-test/test/release-evidence.test.js
       - name: Engineering test suite
         run: npm test
-      - name: Verify the published evidence chain
-        run: node dist/cli.js verify --ledger artifacts/oasb-final/evidence-ledger.json
+      - name: Verify release evidence, claims, pins and checksums
+        run: npm run verify:release
       - name: Refuse to ship a corpus
         run: |
           if [ -e corpus ]; then echo "corpus/ must never be committed"; exit 1; fi

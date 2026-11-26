@@ -1,8 +1,8 @@
 cff-version: 1.2.0
 message: "If you use Antibody Reactor in evaluation or research, cite this software and the OASB dataset separately."
 title: "SHPBL Antibody Reactor"
-version: 0.2.0
-date-released: 2026-09-16
+version: 0.3.0
+date-released: 2026-11-25
 authors:
   - family-names: Sweet
     given-names: Kenneth E.

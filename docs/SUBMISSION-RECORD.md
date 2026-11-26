@@ -21,3 +21,7 @@ approval by the OASB project or its maintainers, and nothing in this repository 
 the project page claims otherwise. If maintainers request changes, they will be made in
 a new version with traceable commits, and any evaluation affected by the change will be
 rerun and its artifacts regenerated.
+
+## 2026-11-26 correction status
+
+The maintainer accepted an adopter listing while explicitly stating that a listing describes use, not certification or endorsement. Our follow-up comment's precision/F1 calculation mixed experiments, and its frozen-champion flag count did not reproduce. `docs/OASB-ISSUE-39-CORRECTION-DRAFT.md` is awaiting founder approval; it has not been posted and earlier comments have not been edited.

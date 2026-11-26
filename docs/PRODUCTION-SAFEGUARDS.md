@@ -1,4 +1,4 @@
-# Production safeguards (v0.3.0 candidate)
+# Production safeguards (v0.3.0; current through v0.3.1 candidate)
 
 Implemented in `src/deployment.ts`, tested in `test/v030.test.ts` (P3). It is a library control, **not integrated into any running system**. No production enforcement exists or is enabled by this branch.
 
@@ -48,7 +48,7 @@ Max 3 concurrent campaigns and abort (`planCampaign`); explicit activation, 24 h
 - **Alerting.** Breaches and rollbacks are ledger events only; wiring them to paging is the operator's job.
 - **Vaccine promotion between versions.** A new vaccine must go through its own planning → shadow path; there is no in-place swap.
 
-## Re-audit hardening (unreleased v0.3.0 candidate)
+## Re-audit hardening (landed in the v0.3.0 release)
 
 - Production target: agent skills, tools, configurations, and supported artifacts reviewed before execution. The evolutionary laboratory remains the policy-development engine.
 - Enforcement requires an independently pinned vaccine policy fingerprint, positive monitoring evidence, and explicit authorization. Unpinned campaigns can run only in shadow.

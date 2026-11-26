@@ -38,3 +38,7 @@ A reviewer can:
 - mode: categorized malicious fixtures only for recall (`270`, 30 across each of nine categories)
 
 No OASB corpus content is redistributed here.
+
+## 2026-11-26 correction
+
+The later precision/F1 claim mixed this five-fold experiment with a separate frozen-policy benign count and is withdrawn. The earlier frozen-champion flag count also failed reproduction. The pinned frozen policy instead produces 229 TP, 9 FP, 41 FN and 168 TN over PR #411's 447 samples. All 447 were training/selection-exposed, so its internally consistent metrics remain research-only. See `EVIDENCE-CORRECTION-v0.3.1.md`.

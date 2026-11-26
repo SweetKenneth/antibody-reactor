@@ -5,7 +5,7 @@
 #
 # OASB is not redistributed here. Clone it separately:
 #   git clone https://github.com/opena2a-org/oasb
-#   git -C oasb checkout fddf2b1379c5597a3e83a3c6f7833b8e5613a04e
+#   git -C oasb checkout 8e4ed173f9a814cf61ade0ff48fe4a9b6a50847f
 set -euo pipefail
 
 if [[ -z "${OASB_DIR:-}" ]]; then
@@ -22,14 +22,16 @@ echo "== corpus identity =="
 ACTUAL_SHA="$(node -e "const{createHash}=require('node:crypto');const fs=require('node:fs');console.log(createHash('sha256').update(fs.readFileSync(process.argv[1])).digest('hex'))" "$CORPUS")"
 echo "corpus sha256: $ACTUAL_SHA"
 if [[ "$ACTUAL_SHA" != "$EXPECTED_CORPUS_SHA" ]]; then
-  echo "NOTE: this is not the corpus the published numbers were measured on." >&2
-  echo "Expected $EXPECTED_CORPUS_SHA. Results below will legitimately differ." >&2
+  echo "ERROR: OASB corpus fingerprint mismatch. Expected: $EXPECTED_CORPUS_SHA" >&2
+  echo "Actual: $ACTUAL_SHA" >&2
+  exit 2
 fi
 
 echo "== build and engineering tests =="
-npm install
+npm install --no-package-lock
 npm run build
 npm test
+npm run verify:release
 
 echo "== sealed-holdout run =="
 node dist/cli.js run --corpus "$CORPUS" --out artifacts/reproduced-final \
@@ -41,13 +43,21 @@ node dist/cli.js run --corpus "$CORPUS" --out artifacts/reproduced-final-again \
 diff -r artifacts/reproduced-final artifacts/reproduced-final-again \
   && echo "identical across runs"
 
-echo "== ledger verification =="
-node dist/cli.js verify --ledger artifacts/reproduced-final/evidence-ledger.json
+echo "== pinned ledger, vaccine, claims and checksum verification =="
+node dist/cli.js verify --ledger artifacts/reproduced-final/evidence-ledger.json \
+  --trusted TRUSTED-FINGERPRINTS.json --release 0.2.0 --require-pins
+
+echo "== original final artifacts unchanged =="
+diff -r artifacts/reproduced-final artifacts/oasb-final
 
 echo "== five-fold out-of-fold evaluation (about one minute) =="
 node dist/cli.js crossvalidate --corpus "$CORPUS" --out artifacts/reproduced-cv5 --folds 5
 
-echo
-echo "Compare artifacts/reproduced-cv5/cross-validation.json against"
-echo "artifacts/oasb-cv5/cross-validation.json. The published claim is"
-echo "220/270 = 81.48% out-of-fold categorized-attack recall."
+echo "== original five-fold artifacts unchanged =="
+diff -r artifacts/reproduced-cv5 artifacts/oasb-cv5
+
+echo "== corrected frozen-policy evidence =="
+node scripts/audit-evidence.mjs
+npm run verify:evidence
+
+echo "Verified 220/270 five-fold recall and the separate frozen-policy confusion matrix."

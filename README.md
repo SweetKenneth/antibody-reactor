@@ -1,223 +1,176 @@
 # SHPBL ANTIBODY REACTOR
 
-> **v0.3.0 candidate (branch `hardening/v0.3.0`, unreleased).** Fail-closed scanning, vaccine validation, pinned evidence verification and a human-gated shadow/canary/rollback controller. Independent testing of the frozen v0.2.0 vaccine found it **does not generalise** beyond OASB-shaped agent artifacts (0/60 chat prompt injections, 49/139 jailbreaks, 6/24 hand-written agent attacks). Use it as an advisory signal in shadow mode only. See `docs/AUDIT-v0.3.0.md`, `docs/INDEPENDENT-VALIDATION.md`, `docs/PRODUCTION-SAFEGUARDS.md`. Everything below describes the published v0.2.0 release.
+**v0.3.0 is released. v0.3.1 is an evidence-correction candidate, not published.** Advisory / shadow only. Not certified. Not independently reproduced by OASB. Not autonomous vaccine promotion. Not ready to block production traffic.
 
-> **The security policies reproduce. OASB decides which offspring survive.**
+An experimental evolutionary agent-defense reactor: a governed breeding loop composes, mutates, selects, validates, and deploys **audit-ready security-policy candidates** (called "vaccines"), evaluated against the OASB corpus as evolutionary selection pressure, not against a fully unseen benchmark.
 
-Antibody Reactor is an evolutionary defense laboratory composed from SHPBL/CMPSBL capabilities and driven by an external security corpus. It does not start with a hand-written scanner ruleset. It discovers candidate threat evidence from a training environment, creates populations of defensive strains, breeds them through crossover and mutation, rehearses every child, kills regressions, preserves the dead in a fossil record, and promotes one surviving descendant into a deployable **vaccine** artifact.
+**Source and governance:** Six private SHPBL Governor Edition v1.7.12 capability bodies and contracts were examined and adapted into an independent TypeScript composition. Their source bodies and the private library are not distributed. Exact parent units are recorded in `.shpbl/parents/manifest.json`.
 
-The first target arena is the Open Agent Security Benchmark (OASB) v2 corpus.
+The reactor breeds vaccines. **SHPBL breeds the reactor.**
 
-- Repository: <https://github.com/SweetKenneth/antibody-reactor>
-- Project page and download: <https://shpbl.com/antibody-reactor>
-- Licence: MIT
-- Requires: Node 20.11 or newer, no runtime dependencies
+---
 
-## What makes it weird
+## Published evidence, with its actual limits
 
-A defense has parents.
+The published research claim is **220 / 270 = 81.48% five-fold out-of-fold categorized-attack recall**. Each attack was held out from the evolutionary population that evaluated it; the corpus was not unseen by development of the final frozen champion. The safe-labeled pool is **3,881 benign + 94 edge cases = 3,975**. Corpus label disagreements are **49 / 3,975 = 1.23%**; this is not a field false-positive rate.
 
-A defense can mutate.
+These are measurements from **five independently trained populations**, one frozen champion per held-out fold. They must not be combined with benign predictions from a different single frozen champion.
 
-A mutation can be rehearsed and killed before it reproduces.
+OASB PR #411's training-exposed 447-sample set was also re-run with the single v0.2.0 champion. The corrected, reproducible result is **229 TP, 9 FP, 41 FN, 168 TN** — precision 96.22%, recall 84.81%, F1 90.16%, benign flag rate 5.08%. The earlier public 80.88% precision / 81.18% F1 and 52/177 statements are withdrawn; see `docs/EVIDENCE-CORRECTION-v0.3.1.md`. That 447-sample set is training-exposed research evidence, **not independent validation**.
 
-A promoted defense has a family tree explaining exactly which ancestors it came from.
+Genuinely unseen evaluation of one frozen champion is disappointing: 0/60 deepset, 49/139 jackhhao, 6/24 SHPBL-authored agent artifacts. Not production-ready.
 
-Every birth, rehearsal, generation and promotion is written into a SHA-256 hash-chained evidence ledger.
+## Evidence classes
 
-The dead policies are not deleted. `fossil-record.json` preserves them as the experimental history of defenses that failed selection.
+| Class | What it is | What it is not |
+| --- | --- | --- |
+| Published research | Reproducible seed-pinned evolutionary recall against OASB's frozen corpus | OASB endorsement, certification, or a confirmed real-world detection rate |
+| Training-exposed frozen evaluation | A deterministic scan of the pinned v0.2.0 vaccine over OASB PR #411's selected set | Independent validation, because these samples shaped selection |
+| Engineering validation | Unit, integration, adversarial, security, and deterministic-replay tests (99 on the v0.3.1 candidate) | A model-quality or red-team certification |
+| Production enforcement | **Not shipped.** `DeploymentController` is fail-closed and advisory by design | Automatic promotion, autonomous blocking, or a replacement for policy review |
 
-The champion is converted into `vaccine.json`: a portable weighted-evidence policy plus a staged deployment campaign.
+## What this is
 
-## Stronger validation: five independent populations
+Six parent capabilities from SHPBL Governor Edition v1.7.12 are documented in the preserved manifest. These are their **actual units and seals**, not substituted component identifiers.
 
-After the single sealed-holdout run, the same locked reactor algorithm was run as **5-fold evolutionary validation**. Each of OASB's 270 categorized malicious fixtures was held out exactly once from the population that scored it.
+| Source unit | Role | Seal |
+| --- | --- | --- |
+| `IMMUNITY::createAntibodyGenerator` | Threat memory and synthesized defense-rule semantics | `655cd4a8b9403925` |
+| `IMMUNITY::createDefenseBreeder` | Strain parentage, mutation, crossover, survival and extinction | `0db02d516df916d7` |
+| `ECHO::createMutationRehearsalEngine` | Candidate rehearsal, regression failures and verdicts | `793f191c3e86b64d` |
+| `CORE::createEvidenceLedger` | Evidence ledger semantics, strengthened into a SHA-256 chain | `10a4adfdbecbbc13` |
+| `IMMUNITY::synthesizeVaccine` | Promotion into a portable vaccine specification | `f96209bdd34a3380` |
+| `IMMUNITY::planCampaign` | Staged deployment-campaign semantics | `e11b7b6f64363741` |
 
-**Out-of-fold categorized-attack recall: 220 / 270 = 81.48%.**
+Provenance does not mean every safeguard survived the composition. The v0.3.0 source audit records which lifecycle controls had to be restored.
 
-The five populations independently promoted different champions. Aggregate category results were:
+v0.3.0 adds bounded fail-closed scanning, vaccine validation, fingerprint verification and human-gated deployment controls. v0.3.1 corrects evidence accounting; it does not improve the frozen detector or make it production-ready.
 
-| Family | Out-of-fold detected |
-|---|---:|
-| credential_exfiltration | 27 / 30 |
-| data_exfiltration | 29 / 30 |
-| heartbeat_rce | 27 / 30 |
-| persistence | 28 / 30 |
-| privilege_escalation | 19 / 30 |
-| prompt_injection | 26 / 30 |
-| social_engineering | 24 / 30 |
-| supply_chain | 16 / 30 |
-| unicode_stego | 24 / 30 |
+## Install & reproduce
 
-Across the same five held-out folds, 49 of 3,975 non-malicious/edge corpus artifacts were flagged (1.23%). That number is retained as evolutionary counter-pressure, **not marketed as real-world FPR**, because of OASB's documented registry-label caveat.
-
-See `artifacts/oasb-cv5/cross-validation.json` and `artifacts/oasb-cv5/REPORT.md`.
-
-
-## OASB submission posture
-
-Antibody Reactor uses OASB as evolutionary selection pressure, so the checked-in final vaccine is **not** submitted as if OASB were an unseen post-hoc test set. The defensible receipt is the five-fold out-of-fold evolutionary evaluation above.
-
-For the current external-validation path, see [`SUBMISSION.md`](SUBMISSION.md) and [`docs/OASB-ADOPTER-ISSUE.md`](docs/OASB-ADOPTER-ISSUE.md). The proposed first submission is an OASB adopter / independent-evaluation issue, not a misleading leaderboard entry.
-
-## Current external-oracle run
-
-The checked-in `artifacts/oasb-final/` run used OASB v2 in the benchmark's categorized-attack mode: 270 authored malicious attack fixtures plus the corpus benign and edge-case material. The 225 uncategorized registry samples whose malicious labels came from scanner-derived registry metadata were excluded from evolutionary recall, matching OASB's current `--categorized-only` benchmark methodology.
-
-- External samples used: **4,245**
-- Partition: **2,765 train / 838 validation / 642 sealed holdout**
-- Generations: **24**
-- Population: **40**
-- Champion: `def-g24-c7fbd215ef`
-- Champion genome: **41 rules**, threshold `11.0459`
-- Validation recall: **98.11%** (52/53 categorized attacks)
-- Sealed-holdout recall: **85.29%** (29/34 categorized attacks)
-- Holdout corpus-labeled benign disagreement: **0.16%** (1/608 safe-labeled/edge artifacts counted by the confusion matrix)
-- Holdout F1*: **90.63%**
-- Holdout MCC*: **0.9033**
-- Evidence events: **4,454**, hash chain verified
-- Mutation rehearsals: **4,424** — 769 safe, 1,439 risky, 2,216 blocked
-
-\* OASB itself cautions against treating benign-derived metrics from this corpus as independent real-world scanner accuracy because most registry benign labels were created through a prior scanner-selection process. Antibody Reactor keeps those labels as useful counter-pressure against "flag everything" behavior, but the defensible external detection receipt here is categorized malicious recall on the sealed holdout. The 34-attack holdout is also small; do not compare 85.29% directly to a scanner number measured on all 270 fixtures.
-
-### Holdout attack-family receipt
-
-| Family | Detected / holdout |
-|---|---:|
-| credential_exfiltration | 2 / 2 |
-| data_exfiltration | 6 / 6 |
-| heartbeat_rce | 6 / 6 |
-| persistence | 4 / 4 |
-| privilege_escalation | 1 / 5 |
-| prompt_injection | 3 / 3 |
-| social_engineering | 2 / 2 |
-| supply_chain | 4 / 5 |
-| unicode_stego | 1 / 1 |
-
-The weakness is visible instead of hidden: this descendant still struggles with privilege escalation in the sealed sample. That failure is exactly the kind of pressure a future generation can attack.
-
-## Architecture
-
-```text
-OASB corpus
-   │
-   ├── stable train / validation / sealed-holdout partition
-   │
-   ├── TRAIN ──> antibody evidence discovery
-   │                  │
-   │                  v
-   │            seed defense strains
-   │                  │
-   │          crossover + mutation
-   │                  │
-   └── VALIDATION ──> external fitness oracle
-                      │
-               mutation rehearsal
-                 │           │
-              survive       die ──> fossil record
-                 │
-              reproduce
-                 │
-            generation N
-                 │
-            ONE champion
-                 │
-   SEALED HOLDOUT opens once
-                 │
-                 v
-              vaccine.json
-                 │
-          deployment campaign
-```
-
-## Reproduce the experiment
-
-No OASB corpus is redistributed in this project. Download/clone OASB separately and point the reactor at its corpus.
+Node.js 20.11+ and a POSIX shell are required. These commands apply to the **draft v0.3.1 branch**; the latest public release remains v0.3.0.
 
 ```bash
-npm install
+git clone https://github.com/SweetKenneth/antibody-reactor.git
+cd antibody-reactor
+git checkout correction/v0.3.1
+npm install --no-package-lock
 npm run build
-node dist/cli.js run \
-  --corpus /path/to/oasb/corpus/v2.json \
-  --out artifacts/my-run \
-  --generations 24 \
-  --population 40 \
-  --elite 8
+npm test
+npm run verify:release
+
+# Obtain OASB separately; its corpus is not redistributed here.
+git clone https://github.com/opena2a-org/oasb.git ../oasb
+git -C ../oasb checkout 8e4ed173f9a814cf61ade0ff48fe4a9b6a50847f
+OASB_DIR="$(cd ../oasb && pwd)" ./scripts/reproduce.sh
 ```
 
-By default, `run` uses OASB categorized-attack mode. Add `--all-malicious` only if you intentionally want to include the 225 uncategorized registry samples.
+The full reproduction script requires `OASB_DIR`, verifies the exact corpus SHA-256 and compares all historical artifacts. Run it from a clean checkout: the generated `artifacts/reproduced-*` output paths must not already exist.
 
-## Use the promoted vaccine
+Useful verification commands on the correction branch:
 
 ```bash
-node dist/cli.js scan \
-  --vaccine artifacts/oasb-final/vaccine.json \
-  --file /path/to/agent-artifact.md
+npm run verify:ledger
+npm run verify:vaccine
+npm run verify:evidence
+npm run verify:claims
+npm run eval:independent
+OASB_DIR="$(cd ../oasb && pwd)" npm run audit:evidence
 ```
 
-The scan response includes verdict, score, threshold, candidate category, and every matched inherited/mutated evidence rule.
-
-## Verify the fossil record's evidence chain
+For new experiments, pass the corpus explicitly and use new output directories rather than overwriting historic evidence:
 
 ```bash
-node dist/cli.js verify \
-  --ledger artifacts/oasb-final/evidence-ledger.json
+node dist/cli.js run --corpus "$OASB_DIR/corpus/v2.json" --out artifacts/my-experiment
+node dist/cli.js crossvalidate --corpus "$OASB_DIR/corpus/v2.json" --out artifacts/my-cv5 --folds 5
 ```
 
-A valid run returns `"valid": true` and the ledger head hash.
+## Scan artifacts (advisory/shadow only)
 
-## OASB adapter
+This example uses the compiled local checkout. The repository's pins are a consistency check; for independent trust, obtain them from an independently verified release channel.
 
-`AntibodyReactorScanner` in `src/oasb-scanner.ts` is structurally compatible with OASB's skills-security `ScannerAdapter` contract (`name`, `version`, `id`, and async `scan(content, sampleId, artifactType)`). The `sampleId` is echoed back to the harness and **never participates in classification**.
-
-## Scientific guardrails
-
-1. Candidate rules are discovered from **training content only**.
-2. Sample IDs are used only for stable partition assignment and result echoing; they never become classification evidence.
-3. Validation labels drive evolutionary selection.
-4. The holdout is not tokenized or evaluated until one champion has already been selected.
-5. Blocked mutations are retained in the fossil record rather than silently discarded.
-6. Every final rule contains its original training evidence counts and its inheritance source (`seeded`, `bred`, or `mutated`).
-7. The external corpus is addressed by SHA-256 in run artifacts.
-8. This is an adaptive-defense experiment, not a claim of real-world detection prevalence or certified security.
-
-## SHPBL composition provenance
-
-The composition was engineered from these owned SHPBL/CMPSBL capability bodies:
-
-| Parent | Seal | Load-bearing contribution |
-|---|---|---|
-| `IMMUNITY::createAntibodyGenerator` | `655cd4a8b9403925` | Threat memory and synthesized countermeasure model |
-| `IMMUNITY::createDefenseBreeder` | `0db02d516df916d7` | Strains, parentage, crossover, mutation, survival/extinction |
-| `ECHO::createMutationRehearsalEngine` | `793f191c3e86b64d` | Pre-promotion rehearsal and safe/risky/blocked verdicts |
-| `CORE::createEvidenceLedger` | `10a4adfdbecbbc13` | Auditable evidence record; strengthened here into a hash chain |
-| `IMMUNITY::synthesizeVaccine` | `f96209bdd34a3380` | Promotion of a learned defense into a portable hardening artifact |
-| `IMMUNITY::planCampaign` | `e11b7b6f64363741` | Staged deployment-plan semantics |
-
-See `PROVENANCE.json`, `.shpbl/parents/manifest.json`, and `CAPABILITY-CONTRACT.md`.
-
-## Licensing and attribution
-
-**MIT.** The rights holder, Kenneth E. Sweet Jr., released this project under the MIT licence for public adoption. See [`LICENSE`](LICENSE).
-
-The MIT grant covers this repository only. It does not extend to the private SHPBL/CMPSBL capability library the composition was engineered from — that library is not distributed here, in whole or in part — and it does not extend to the OASB corpus, which is Apache-2.0 material belonging to the OASB project and is likewise not redistributed here.
-
-Parts are composed from capability material created by **Kenneth E. Sweet Jr. (CMPSBL®)**, who is the same person releasing this project under MIT. See [`THIRD_PARTY.md`](THIRD_PARTY.md) and [`PROVENANCE.json`](PROVENANCE.json).
-
-## Reproducibility
-
-Identical inputs produce identical evidence, byte for byte. Every timestamp that enters a published artifact or hashed ledger material comes from a logical clock (`src/clock.ts`), not from wall time, and the evidence chain is anchored to a value derived from the corpus SHA-256 and the run seed — so a valid ledger from one run cannot be presented as evidence for another.
-
-```bash
-node dist/cli.js run --corpus /path/to/oasb/corpus/v2.json --out artifacts/a --seed 20260916
-node dist/cli.js run --corpus /path/to/oasb/corpus/v2.json --out artifacts/b --seed 20260916
-diff -r artifacts/a artifacts/b   # no differences
+```js readme-smoke
+import { readFileSync } from 'node:fs';
+import { AntibodyReactorScanner } from './dist/index.js';
+const vaccine = JSON.parse(readFileSync('artifacts/oasb-final/vaccine.json', 'utf8'));
+const pins = JSON.parse(readFileSync('TRUSTED-FINGERPRINTS.json', 'utf8'));
+const release = pins.releases.find(r => r.version === '0.2.0');
+if (!release) throw new Error('Missing v0.2.0 pin');
+const scanner = new AntibodyReactorScanner(vaccine, {
+  expectedPolicyFingerprint: release.vaccine.policyFingerprint,
+  maxInputBytes: 1024 * 1024
+});
+const result = scanner.scanDetailed('name: weather-helper\\ndescription: Weather lookup', 'weather-helper');
+console.log(result.verdict, result.policyFingerprint);
 ```
 
-`OASB_DIR=/path/to/oasb ./scripts/reproduce.sh` runs the sealed-holdout run, the five-fold evaluation, the byte-for-byte determinism check and ledger verification in sequence.
+The CLI can additionally validate the vaccine's file hash using `--trusted TRUSTED-FINGERPRINTS.json --release 0.2.0`. An `unknown` verdict is not proof of safety, and the confidence value is not a calibrated probability.
 
-The published run above was produced from OASB commit `fddf2b1379c5597a3e83a3c6f7833b8e5613a04e`, corpus `v2.json`, SHA-256 `3ca866a0e637fa198bae17cd3a8f31fb02ad20f50fedcac1caa290e6dceba14e`, seed `20260916`, on Node 20 and Node 22.
+## Human-authorized deployment lifecycle
 
-## What changed in 0.2.0
+The actual exported library uses `DeploymentController`, `FileDeploymentStore` and `denyAll`, with methods `plan`, `activate`, `promote`, `observe`, `decide`, `rollback`, `revoke`, and `abort`. This second example **only plans** a campaign:
 
-0.2.0 is an independent adversarial audit of 0.1.1 followed by remediation. The published results did not change — the same champion, the same 29/34 sealed holdout, the same 220/270 out-of-fold recall — because the fixes were deliberately chosen not to perturb the evolutionary trajectory. What changed is that the evidence is now reproducible and the reporting is now truthful. See [`CHANGELOG.md`](CHANGELOG.md).
+```js readme-smoke
+import { readFileSync } from 'node:fs';
+import { DeploymentController, denyAll } from './dist/index.js';
+const vaccine = JSON.parse(readFileSync('artifacts/oasb-final/vaccine.json', 'utf8'));
+const pins = JSON.parse(readFileSync('TRUSTED-FINGERPRINTS.json', 'utf8'));
+const release = pins.releases.find(r => r.version === '0.2.0');
+if (!release) throw new Error('Missing v0.2.0 pin');
+const controller = new DeploymentController(denyAll);
+const campaign = controller.plan(vaccine, { expectedPolicyFingerprint: release.vaccine.policyFingerprint });
+if (campaign.stage !== 'planning') throw new Error('Unexpected enforcement stage');
+console.log(campaign.stage);
+```
+
+`FileDeploymentStore` is an optional single-writer checkpoint store, not a complete deployment system. Real activation and promotion require an authenticated operator, trusted monitoring labels and an integrated authorization system. No production enforcement is shipped.
+
+## SHPBL governance boundary
+
+- Original SHPBL library is unchanged; no parent body ships here.
+- Composition order is provenance, not a claim that every original protection survived; the v0.3.0 audit in `docs/AUDIT-v0.3.0.md` records what had to be rebuilt.
+- No autonomous vaccine promotion, no production enforcement, no self-modifying runtime.
+- Every evolutionary run is recorded in an append-only SHA-256-linked ledger with immutable evidence artifacts.
+- Human authorization remains mandatory for canary and any future promotion.
+
+## What v0.3.1 does not fix
+
+- Recall on genuinely unseen distributions is weak; the evolutionary algorithm and vaccine are deliberately unchanged.
+- OASB PR #411's set is training-exposed; its corrected F1 is not independent evidence.
+- No real authenticated control plane, trusted feedback source, target-environment rollout test, or independent engineering review.
+- No claim of OASB certification, endorsement, or leaderboard ranking.
+
+See `docs/INDEPENDENT-VALIDATION.md`, `docs/EVIDENCE-CORRECTION-v0.3.1.md`, and `docs/REAUDIT-v0.3.0.md` for the full accounting.
+
+## Repository layout
+
+```
+src/                    independent TypeScript composition, scanner, deployment controller
+scripts/reproduce.sh    seeded reproduction + byte comparison
+scripts/verify-*.mjs    evidence, claims, artifact and checksum gates
+test/                   engineering and regression suite
+test-sets/              frozen post-v0.2.0 datasets, hashes and provenance
+artifacts/              published research artifacts and evidence ledgers
+docs/                   audit, safeguards, validation and submission records
+.shpbl/parents/         provenance only (no harvested bodies)
+TRUSTED-FINGERPRINTS.json  independently supplied SHA-256 policy/ledger pins
+```
+
+## Documentation
+
+- `CAPABILITY-CONTRACT.md` — the written spec of all six parents, with the v0.3.0/v0.3.1 contracts appended
+- `PROVENANCE.json` — composition, lineage, licensing, published evidence and correction record
+- `docs/AUDIT-v0.3.0.md` — historical source/governance audit, with dated release and evidence addenda
+- `docs/REAUDIT-v0.3.0.md` — independent review of the original hardening, with dated addenda
+- `docs/EVIDENCE-CORRECTION-v0.3.1.md` — reconstructed measurements and correction record
+- `docs/INDEPENDENT-VALIDATION.md` — genuinely unseen frozen-policy tests, kept separate from training-exposed results
+- `docs/PRODUCTION-SAFEGUARDS.md` — shadow/canary/rollback/monitoring contract and v1.0.0 blockers
+- `docs/OASB-ISSUE-39-CORRECTION-DRAFT.md` — proposed public correction, **not posted**
+- `TEST-RESULTS.md` — exact test totals, commands, and historical transcripts
+- `CHANGELOG.md` — v0.2.0 → v0.3.0 → v0.3.1 candidate record
+
+## License
+
+MIT — © 2026 Kenneth E. Sweet Jr. See `LICENSE`. OASB corpus remains upstream Apache-2.0; attribution and corpus provenance in `THIRD_PARTY.md`. SHPBL parent capabilities are licensed to this composition; no Governor Edition source is redistributed.
+
+**Use in production at your own risk. This is a research-grade advisory scanner with reproducible evidence, not a certified security control.**

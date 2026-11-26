@@ -2,13 +2,20 @@
 
 All notable changes to this project are recorded here.
 
-## Unreleased (v0.3.0 candidate)
+## Unreleased (v0.3.1 evidence-correction candidate)
+- Withdraws the mixed-experiment precision/F1 claim and the non-reproducing frozen-champion flag count.
+- Reconstructs five-fold recall (220/270) separately from the frozen policy's 229 TP, 9 FP, 41 FN and 168 TN over OASB PR #411's 447 samples.
+- Marks the corrected 96.22% precision, 84.81% recall, 90.16% F1 and 5.08% FPR as training-exposed research measurements, not independent validation.
+- Adds prediction-provenance checks, claim-consistency checks, reproducible evidence generation, and historical artifact/checksum verification.
+- No evolutionary algorithm, vaccine, deployment authority or historical evidence changed.
+
+## 0.3.0 — 2026-11-25 public release
 - decide() fails closed (`hold`) on malformed canary request keys.
 - Added large-scale smoke/property suite (test/smoke.test.ts, SMOKE_SCALE).
 
-## 0.3.0 — candidate (unreleased, branch `hardening/v0.3.0`)
+### Historical development record
 
-Production-hardening candidate. **Not a production-readiness declaration.** No published v0.2.0 metric, artifact or checksum changed: the full run and five-fold cross-validation were re-executed after every change and are byte-identical to the committed artifacts. Full audit: `docs/AUDIT-v0.3.0.md`.
+The following was written while v0.3.0 was a candidate and is retained as development history. The release was subsequently merged and published on 2026-11-25. **It was not a production-readiness declaration.** No published v0.2.0 metric, artifact or checksum changed: the full run and five-fold cross-validation were re-executed after every change and are byte-identical to the committed artifacts. Full audit: `docs/AUDIT-v0.3.0.md`.
 
 ### Fixed
 - Scanner confidence reported 0.99 "benign" for empty input. Confidence is now a bounded, explicitly uncalibrated margin heuristic (benign ≤ 0.75, malicious ≤ 0.95). Verdicts unchanged.

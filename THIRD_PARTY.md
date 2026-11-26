@@ -22,7 +22,7 @@ The composition was engineered from capability bodies in a private library owned
 MIT, Copyright (c) 2026 Kenneth E. Sweet Jr. See `LICENSE`.
 
 
-## Independent test sets (added in v0.3.0 candidate)
+## Independent test sets (added during v0.3.0 development)
 
 `test-sets/` contains the `test` splits of two Hugging Face datasets, redistributed under Apache-2.0 for reproducible evaluation only. They were never used for training.
 
