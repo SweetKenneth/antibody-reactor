@@ -50,3 +50,7 @@ The current candidate checksum manifest is resealed separately; it does not repl
 4. **Release gate:** independently review the frozen candidate and the above evidence before assigning v1.0.0. Do not equate a version bump or green unit tests with production readiness.
 
 No private Governor Edition capability bodies were copied into the public source, and no Governor Edition library was modified in this pass. Earlier parent-contract findings remain historical evidence, not a newly repeated private-library audit.
+
+## 2026-11-26 release-status and evidence addendum
+
+This re-audit's candidate was subsequently merged and published as v0.3.0 on 2026-11-25. Its GitHub branch and pull request are no longer stale, contrary to the historical scope line above. The v0.3.1 correction candidate preserves these records and separately corrects the later mixed-experiment precision/F1 and non-reproducing frozen-champion flag count. See `EVIDENCE-CORRECTION-v0.3.1.md`. The production gates above remain open.

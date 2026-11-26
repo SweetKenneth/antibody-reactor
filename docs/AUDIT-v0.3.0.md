@@ -54,3 +54,7 @@ See `docs/PRODUCTION-SAFEGUARDS.md` and `docs/INDEPENDENT-VALIDATION.md`.
 ## Re-audit addendum
 
 A second source audit reproduced or confirmed deployment-control, validator, CLI, and trust-file defects in the candidate. All listed defects now have regression tests. The candidate remains advisory/shadow-first and is not v1.0.0: independent generalization, real approver identity, trusted labels, alert delivery, external pin storage, and target-environment exercises remain open.
+
+## 2026-11-26 release-status and evidence addendum
+
+The candidate described above was subsequently merged and published as v0.3.0 on 2026-11-25; the original status and V7 rationale above remain historical audit text. `CITATION.cff` now identifies v0.3.0 as the latest published release. The v0.3.1 correction candidate separately withdraws the later mixed-experiment precision/F1 and non-reproducing frozen-champion flag count. See `EVIDENCE-CORRECTION-v0.3.1.md`. No original audit result or research artifact was changed.

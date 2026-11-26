@@ -86,7 +86,7 @@ The report SHALL distinguish categorized malicious recall from benign-derived me
 
 ---
 
-## v0.3.0 candidate additions
+## v0.3.0 additions (released 2026-11-25)
 
 The verification state above is the historical v0.1/v0.2 record and is preserved as written. Current evidence: `TEST-RESULTS.md`.
 
@@ -101,3 +101,11 @@ No step that increases enforcement SHALL occur without an approval accepted by a
 
 ### C16 — Honest confidence and independent measurement
 Confidence SHALL be labelled as an uncalibrated heuristic. Generalisation claims SHALL rest only on sets never used for training or selection. **Evidence:** test V1, `docs/INDEPENDENT-VALIDATION.md`, test P4.
+
+## v0.3.1 evidence-correction candidate
+
+### C17 — Coherent measurement provenance
+Every precision, recall, F1 and false-positive rate SHALL be derived from one prediction set with one evaluation identity, dataset hash and policy fingerprint. Cross-experiment, cross-dataset and cross-policy mixing SHALL be rejected. Unknown verdicts SHALL NOT be silently converted into correct classifications. **Evidence:** `src/evidence.ts`, tests E1–E6, `artifacts/evidence-audit-v0.3.1/results.json`.
+
+### C18 — Public-claim consistency
+Current documentation SHALL NOT present five-fold evolutionary recall as one frozen vaccine's recall or describe training/selection-exposed OASB fixtures as independent validation. Historical corrections SHALL preserve, rather than erase, the earlier record. **Evidence:** `scripts/verify-claims.mjs`, `docs/EVIDENCE-CORRECTION-v0.3.1.md`.
