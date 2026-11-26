@@ -29,15 +29,15 @@ These values all derive from this single confusion matrix. The earlier 52/177 co
 
 ## 3. Genuinely unseen frozen-policy evaluation (unchanged)
 
-The committed post-v0.2.0 datasets were excluded from breeding and selection. One frozen champion produced:
+The original frozen-policy evidence in `artifacts/independent-v0.3.0/results.json` supplies the counts below. The two third-party sets are outside the target agent-artifact distribution; the authored set is in-domain but not independent.
 
-| Dataset | Detected | Benign false alarms |
-| --- | --- | --- |
-| deepset prompt-injection test | 0 / 60 | 0 / 0 |
-| jackhhao jailbreak test | 49 / 139 | 0 / 0 |
-| SHPBL-authored agent artifacts | 6 / 24 | 0 / 6 |
+| Dataset | Malicious detected | Benign false alarms |
+| --- | ---: | ---: |
+| deepset prompt-injection test | **0 / 60** | **0 / 56** |
+| jackhhao jailbreak test | **49 / 139** | **1 / 123** |
+| SHPBL-authored agent artifacts | **6 / 24** | **1 / 24** |
 
-No new training, vaccine change, or test-set tuning was performed for v0.3.1. The SHPBL-authored set is not independent evidence; it is labeled accordingly.
+These results remain unchanged. They do not establish production-grade detection.
 
 ## 4. Withdrawn mixed calculation
 
@@ -47,16 +47,19 @@ The earlier public precision 80.88% and F1 81.18% used five-fold recall 220/270 
 
 ## 5. Reproduction
 
-The OASB corpus is intentionally not redistributed. Supply the exact pinned OASB JSON, then run:
+From the v0.3.1 correction branch, clone OASB separately and use the pinned upstream revision. The audit script requires `OASB_DIR` and refuses an unexpected corpus SHA-256.
 
 ```bash
+git clone https://github.com/opena2a-org/oasb.git ../oasb
+git -C ../oasb checkout 8e4ed173f9a814cf61ade0ff48fe4a9b6a50847f
+npm install --no-package-lock
 npm run build
-OASB_CORPUS=/path/to/oasb-corpus.json node scripts/audit-evidence.mjs
+OASB_DIR="$(cd ../oasb && pwd)" npm run audit:evidence
 npm run verify:evidence
 npm run verify:claims
 ```
 
-The audit resolves the corpus using `OASB_CORPUS`, `OASB_REPO` (a checkout containing `corpus/v2.json`), or a candidate path supplied by the maintainer. It refuses an unverified corpus digest. Without the corpus it reconstructs the five-fold result and records why the frozen re-scan cannot run; it never fabricates the frozen result.
+The audit reads `OASB_DIR/corpus/v2.json`. If the pinned corpus is unavailable, it fails rather than inventing a frozen-policy re-scan.
 
 ## 6. What remains necessary
 
