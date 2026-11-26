@@ -1,0 +1,169 @@
+{
+  "schema": "shpbl.antibody-reactor.evidence-audit/v1",
+  "correction": "v0.3.1",
+  "sourceRevision": "8e4ed173f9a814cf61ade0ff48fe4a9b6a50847f",
+  "corpus": {
+    "path": "corpus/v2.json",
+    "sha256": "3ca866a0e637fa198bae17cd3a8f31fb02ad20f50fedcac1caa290e6dceba14e"
+  },
+  "frozenVaccine": {
+    "id": "vax-c45267d9173363",
+    "fileSha256": "8837f2bfe3f58f23f0a608d0380113c16cfacb35501e64e0d0773502540f6ded",
+    "policyFingerprint": "1da0784ee730f213aaf105ef86dbdbc9d29cc4b527a190cc5ba5301e0437901c",
+    "release": "v0.2.0"
+  },
+  "fiveFold": {
+    "evaluationId": "oasb-cv5-five-independent-populations",
+    "independentPolicies": true,
+    "malicious": 270,
+    "detected": 220,
+    "recall": 0.8148148148148148,
+    "safeLabeled": 3975,
+    "safeFlagged": 49,
+    "safeDisagreementRate": 0.012327044025157233,
+    "categories": [
+      {
+        "category": "credential_exfiltration",
+        "malicious": 30,
+        "detected": 27,
+        "recall": 0.9
+      },
+      {
+        "category": "data_exfiltration",
+        "malicious": 30,
+        "detected": 29,
+        "recall": 0.9666666666666667
+      },
+      {
+        "category": "heartbeat_rce",
+        "malicious": 30,
+        "detected": 27,
+        "recall": 0.9
+      },
+      {
+        "category": "persistence",
+        "malicious": 30,
+        "detected": 28,
+        "recall": 0.9333333333333333
+      },
+      {
+        "category": "privilege_escalation",
+        "malicious": 30,
+        "detected": 19,
+        "recall": 0.6333333333333333
+      },
+      {
+        "category": "prompt_injection",
+        "malicious": 30,
+        "detected": 26,
+        "recall": 0.8666666666666667
+      },
+      {
+        "category": "social_engineering",
+        "malicious": 30,
+        "detected": 24,
+        "recall": 0.8
+      },
+      {
+        "category": "supply_chain",
+        "malicious": 30,
+        "detected": 16,
+        "recall": 0.5333333333333333
+      },
+      {
+        "category": "unicode_stego",
+        "malicious": 30,
+        "detected": 24,
+        "recall": 0.8
+      }
+    ],
+    "championIds": [
+      "def-g23-cc12b024e4",
+      "def-g16-0cf4d3a3c3",
+      "def-g22-06dc3adb58",
+      "def-g24-151c322443",
+      "def-g23-acde696327"
+    ]
+  },
+  "frozenOasbPr411": {
+    "schema": "shpbl.antibody-reactor.frozen-oasb-evaluation/v1",
+    "evaluationId": "oasb-pr411-frozen-v0.2.0-research-only",
+    "datasetSha256": "3ca866a0e637fa198bae17cd3a8f31fb02ad20f50fedcac1caa290e6dceba14e",
+    "policyFingerprint": "1da0784ee730f213aaf105ef86dbdbc9d29cc4b527a190cc5ba5301e0437901c",
+    "samples": 447,
+    "tp": 229,
+    "fp": 9,
+    "fn": 41,
+    "tn": 168,
+    "precision": 0.9621848739495799,
+    "recall": 0.8481481481481481,
+    "f1": 0.9015748031496063,
+    "falsePositiveRate": 0.05084745762711865,
+    "scannerVersion": "0.3.1",
+    "vaccineId": "vax-c45267d9173363",
+    "independent": false,
+    "exposure": "training-and-selection-exposed",
+    "malicious": 270,
+    "benign": 177,
+    "categories": [
+      {
+        "category": "credential_exfiltration",
+        "malicious": 30,
+        "detected": 27
+      },
+      {
+        "category": "data_exfiltration",
+        "malicious": 30,
+        "detected": 26
+      },
+      {
+        "category": "heartbeat_rce",
+        "malicious": 30,
+        "detected": 28
+      },
+      {
+        "category": "persistence",
+        "malicious": 30,
+        "detected": 30
+      },
+      {
+        "category": "privilege_escalation",
+        "malicious": 30,
+        "detected": 18
+      },
+      {
+        "category": "prompt_injection",
+        "malicious": 30,
+        "detected": 26
+      },
+      {
+        "category": "social_engineering",
+        "malicious": 30,
+        "detected": 26
+      },
+      {
+        "category": "supply_chain",
+        "malicious": 30,
+        "detected": 23
+      },
+      {
+        "category": "unicode_stego",
+        "malicious": 30,
+        "detected": 25
+      }
+    ]
+  },
+  "supersededClaims": [
+    {
+      "claim": "52/177 benign fixtures flagged",
+      "status": "not reproduced",
+      "corrected": "9/177",
+      "reason": "Direct scans with both the v0.2.0 and v0.3.0 released scanners produce the corrected count."
+    },
+    {
+      "claim": "80.88% precision and 81.18% F1",
+      "status": "withdrawn",
+      "reason": "The earlier calculation mixed five-fold recall from five policies with a separately reported frozen-policy benign count. The corrected frozen evaluation derives every cell from one policy and one 447-sample prediction set."
+    }
+  ]
+}
