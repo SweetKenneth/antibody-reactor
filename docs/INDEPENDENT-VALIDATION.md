@@ -1,40 +1,63 @@
-# Independent validation — frozen v0.2.0 vaccine on unseen samples
+# Independent and research evaluation — evidence correction
 
-**Nothing was trained, tuned or selected on these sets.** The v0.2.0 vaccine (`vax-c45267d9173363`, policy fingerprint `1da0784e…7901c`, file SHA-256 `8837f2bf…f6ded`, verified against `TRUSTED-FINGERPRINTS.json` before use) was applied as published: same 41 rules, same threshold 11.0459. Every sample file was hashed before scanning. Results are in `artifacts/independent-v0.3.0/results.json` and are recomputed exactly by test `P4` on every `npm test`, so they cannot be silently replaced.
+## Principle
 
-Reproduce: `npm run build && npm run eval:independent`
+A metric belongs to one prediction set, one policy, and one dataset. Five-fold recall from five separately trained populations cannot be combined with benign predictions from one frozen champion to produce a meaningful F1. This document keeps those observations separate.
 
-## Results
+## 1. Five-fold evolutionary research result (preserve)
 
-| Set | Source | Malicious detected | Benign flagged | Unknown |
-|---|---|---|---|---|
-| `deepset-prompt-injections-test.json` | deepset/prompt-injections, `test` split, revision `4f61ecb0`, Apache-2.0. Third-party labels. | **0 / 60 (0.00%)** | 0 / 56 (0.00%) | 0 |
-| `jackhhao-jailbreak-test.json` | jackhhao/jailbreak-classification, `test` split, revision `2f2ceeb3`, Apache-2.0. Third-party labels. | **49 / 139 (35.25%)** | 1 / 123 (0.81%) | 0 |
-| `authored-agent-artifacts.json` | 24 malicious + 24 benign agent-artifact snippets (skills, MCP manifests, READMEs) written for this audit and hashed before any scoring. **Not independent:** written by the same agent that did the hardening. In-domain, small. | **6 / 24 (25.00%)** | 1 / 24 (4.17%) | 0 |
+The original five-fold experiment used five independently trained populations and five distinct champion policies. Its original fold files reconstruct exactly:
 
-File SHA-256: deepset `bff312e0…55627`, jackhhao `58a87a0d…5b65b`, authored `5764b297…d798`.
+| Observation | Count | Rate |
+| --- | --- | --- |
+| Held-out malicious detections | 220 / 270 | 81.48% recall |
+| Corpus-label disagreements on the safe pool | 49 / 3,975 | 1.23% |
 
-## What this means
+The safe pool is 3,881 benign plus 94 edge cases. The 1.23% value is not a field false-positive rate. This remains valid evolutionary research evidence; it is not a single frozen scanner's precision/F1 evaluation.
 
-- **The vaccine does not generalise beyond OASB-shaped artifacts.** 0% on short chat-style prompt injections, about a third of role-play jailbreaks, a quarter of hand-written agent attacks. Out-of-fold recall on OASB was 81.48%; that number describes OASB's distribution, not attacks in general.
-- The deepset and jackhhao sets are a distribution shift (chat prompts, partly German in deepset) from what the reactor was trained on (agent skill/config artifacts). They measure generalisation, not in-domain accuracy. The authored set is in-domain but small and not independent; treat it as a smoke test.
-- Low benign flagging here is mostly a consequence of the vaccine flagging very little. It is not evidence of a low production false-positive rate.
-- The one authored benign false positive (`authored-ben-12`, a legitimate `curl -I` health check) is a real false positive.
-- These are measurements of v0.2.0's frozen policy. They were not used to change it, and must not be: a vaccine re-bred against these sets would need a new, untouched test set to say anything.
+## 2. Frozen v0.2.0 champion on OASB PR #411 (training-exposed)
 
-## Production consequence
+OASB PR #411 selects 270 categorized malicious samples and 177 hand-written benign samples. Running one pinned v0.2.0 vaccine over that exact set gives:
 
-The scanner is suitable as an **advisory signal in shadow mode** on OASB-like agent artifacts. It is **not** suitable as a sole gate, and not suitable for chat-prompt injection detection.
+| TP | FP | FN | TN | Precision | Recall | F1 | Benign flag rate |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 229 | 9 | 41 | 168 | 96.22% | 84.81% | 90.16% | 5.08% |
 
-## OASB PR #411 hand-written benign fixtures (added after maintainer reply on issue #39)
+These values all derive from this single confusion matrix. The earlier 52/177 count did not reproduce under the pinned scanner and PR #411 selector and is withdrawn.
 
-OASB merged 177 hand-written benign fixtures (`BEN-001`..`BEN-177`) in PR #411, labelled without the scanner under test. The frozen v0.2.0 champion was run against them unchanged (no re-breeding, no tuning).
+**Exposure boundary:** these 447 samples were part of the corpus that shaped evolution and selection. This is a training-exposed research measurement, not independent validation. It must not be advertised as an unseen-result F1.
 
-| Measure | Result |
-|---|---|
-| Benign fixtures flagged | **52 / 177 (29.38% FPR)** |
-| Benign fixtures passed | 125 / 177 |
-| Categorized attacks caught (the 270 fixtures the vaccine was bred on) | 220 / 270 (81.48%) |
-| Precision / F1 (220 TP, 52 FP, 50 FN) | 80.88% / 81.18% |
+## 3. Genuinely unseen frozen-policy evaluation (unchanged)
 
-Only the false-positive rate is out-of-sample. The 81.48% recall is on the corpus that was the selection pressure, so the F1 mixes an in-sample recall with an out-of-sample FPR and must not be read as a held-out score. A 29% FPR on clean hand-written artifacts confirms the scanner is advisory/shadow-only.
+The committed post-v0.2.0 datasets were excluded from breeding and selection. One frozen champion produced:
+
+| Dataset | Detected | Benign false alarms |
+| --- | --- | --- |
+| deepset prompt-injection test | 0 / 60 | 0 / 0 |
+| jackhhao jailbreak test | 49 / 139 | 0 / 0 |
+| SHPBL-authored agent artifacts | 6 / 24 | 0 / 6 |
+
+No new training, vaccine change, or test-set tuning was performed for v0.3.1. The SHPBL-authored set is not independent evidence; it is labeled accordingly.
+
+## 4. Withdrawn mixed calculation
+
+The earlier public precision 80.88% and F1 81.18% used five-fold recall 220/270 with a different frozen champion's benign count. Those numerators and denominators did not describe one scanner over one prediction set. Both figures and the unreproduced 52/177 statement are withdrawn, not silently replaced.
+
+`src/evidence.ts` and `test/evidence.test.ts` now reject mixed evaluation IDs, dataset hashes, and policy fingerprints. `npm run verify:evidence` reconstructs the accounting; `npm run verify:claims` checks current public documents.
+
+## 5. Reproduction
+
+The OASB corpus is intentionally not redistributed. Supply the exact pinned OASB JSON, then run:
+
+```bash
+npm run build
+OASB_CORPUS=/path/to/oasb-corpus.json node scripts/audit-evidence.mjs
+npm run verify:evidence
+npm run verify:claims
+```
+
+The audit resolves the corpus using `OASB_CORPUS`, `OASB_REPO` (a checkout containing `corpus/v2.json`), or a candidate path supplied by the maintainer. It refuses an unverified corpus digest. Without the corpus it reconstructs the five-fold result and records why the frozen re-scan cannot run; it never fabricates the frozen result.
+
+## 6. What remains necessary
+
+A representative, untouched agent-artifact test set with independent labels and no training exposure is still required. Real authorization, trusted feedback, target-environment rollout/recovery tests, and external engineering review remain open. Antibody Reactor stays advisory/shadow-only.

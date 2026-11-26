@@ -1,45 +1,45 @@
-# External validation posture
+# Submission: SHPBL Antibody Reactor
 
-## What is being claimed
+## Target
 
-**220 / 270 = 81.48% out-of-fold categorized-attack recall**, measured across five independent evolutionary populations, with every one of OASB's 270 authored attack fixtures held out exactly once from the population that scored it. Artifact: `artifacts/oasb-cv5/cross-validation.json`.
+- **Program:** OASB Adopters section (`opena2a-org/oasb`) — an informational usage listing, not a certification
+- **Public discussion:** https://github.com/opena2a-org/oasb/issues/39
+- **Repository:** https://github.com/SweetKenneth/antibody-reactor
+- **Published release:** https://github.com/SweetKenneth/antibody-reactor/releases/tag/v0.3.0
+- **Correction candidate:** `correction/v0.3.1`; not tagged or published
 
-Secondary: **29 / 34 = 85.29%** recall on a sealed holdout opened once after a single champion was selected. The denominator is small and this number must not be compared to a scanner measured over all 270 fixtures.
+## Status
 
-## What is deliberately not being claimed
+The maintainer agreed in principle to an adopter listing and verified the referenced OASB commit, corpus hash, and sample counts. They did **not** reproduce the evolutionary result, endorse SHPBL, certify the scanner, or confirm a production detection rate.
 
-- **Not a false-positive rate.** OASB withdrew its precision, F1, false-positive-rate and flag-rate claims on 2026-08-09 because much of its benign class was labeled using the scanner under test. Benign disagreement here — 49 of 3,975 out-of-fold (1.23%), 1 of 608 on the sealed holdout (0.16%) — is retained as evolutionary counter-pressure against flag-everything behaviour and is reported as disagreement with corpus labels, nothing more. The benign side of the corpus used here is 3,881 `benign` + 94 `edge_case` = 3,975 samples. Against OASB PR #411's 177 hand-written benign fixtures (labelled without the scanner), the frozen champion flags 52 (29.38%); see docs/INDEPENDENT-VALIDATION.md.
-- **Not comparable to OASB or HackMyAgent historical scores.** No comparability is asserted, because OASB's current methodology does not support it for a system that used the corpus as selection pressure.
-- **Not an independent post-hoc benchmark score.** OASB was used as evolutionary selection pressure. The final champion's in-sample performance is not presented as a benchmark result anywhere in this repository or on the project page.
-- **Not certified, endorsed or approved** by the OASB project or its maintainers. Depending on OASB and citing it is not an endorsement.
+The previously posted 80.88% precision / 81.18% F1 statement was methodologically wrong because it combined different experiments. The earlier 52/177 count also did not reproduce. A corrective follow-up is drafted in `docs/OASB-ISSUE-39-CORRECTION-DRAFT.md` and is **not posted without founder approval**. Earlier comments remain untouched.
 
-## Chosen submission route
+## Corrected evidence summary
 
-The **adopter / independent-evaluation issue** path documented in OASB's `CONTRIBUTING.md`, which instructs adopters to "open an issue describing how you run OASB and against which product". Draft: `docs/OASB-ADOPTER-ISSUE.md`.
+- Five independently trained populations, each evaluated on its held-out fold: **220/270 held-out malicious detections (81.48%)**.
+- Original safe-labeled pool: **3,881 benign + 94 edge cases = 3,975**; **49 corpus-label disagreements**. That ratio is not a field false-positive rate.
+- One frozen v0.2.0 champion over OASB PR #411's exact training-exposed selection: **229 TP, 9 FP, 41 FN, 168 TN**. Derived precision **96.22%**, recall **84.81%**, F1 **90.16%**, benign flag rate **5.08%**. This is not independent validation.
+- Genuinely unseen frozen-policy results remain weak: **0/60**, **49/139**, and **6/24** on the three committed sets. No production claim follows from the training-exposed F1.
 
-A hosted scanner submission is **not** used. Two reasons, both checked rather than assumed:
+Reconstruction and reproducible commands: `docs/EVIDENCE-CORRECTION-v0.3.1.md`, `docs/INDEPENDENT-VALIDATION.md`, `artifacts/evidence-audit-v0.3.1/results.json`.
 
-1. There is no reachable hosted submission API. `https://api.oa2a.org/api/v1/benchmark/submit` returns 404, as does the API root. OASB's current documentation describes submission as local and manual.
-2. Even if one existed, this system used the corpus as selection pressure. Submitting a frozen champion against the same corpus as though it were unseen would misrepresent the methodology. Acceptance by an endpoint is not methodological validity.
+## What an adopter listing does and does not mean
 
-If OASB maintainers want a hosted scanner submission, the adopter issue asks them directly. A future OASB dataset version released after this vaccine was frozen would provide a genuinely unseen external evaluation, and that is the cleanest next step.
+- **Does:** publicly document that the OASB corpus was used for a reproducible experimental scanner.
+- **Does not:** certify Antibody Reactor, rank it, validate its detection claims, endorse SHPBL, or approve production deployment.
 
-## Stricter than the server
+## What we are NOT requesting
 
-OASB issue #24 records that incomplete submissions can currently earn a high tier. This project therefore validates locally before it would ever submit: exact dataset version, exact published release version, one result for every required sample, no missing, duplicate or unknown sample ids, valid verdict and category enums, complete run metadata, and an immutable released commit. If any of those is imperfect the submission fails locally. A gap in the scoring server is not an opportunity.
+- No certification, no leaderboard ranking, no endorsement.
+- No request to treat training-exposed metrics as independent validation.
+- No claim that the v0.3.1 candidate is released or that CI has passed on GitHub.
+- No autonomous promotion or production-blocking recommendation.
 
-## Pinned references
+## Documents for reviewers
 
-| Item | Value |
-|---|---|
-| OASB repository | <https://github.com/opena2a-org/oasb> |
-| OASB commit used | `fddf2b1379c5597a3e83a3c6f7833b8e5613a04e` |
-| OASB licence | Apache-2.0 |
-| Corpus file | `corpus/v2.json` |
-| Corpus SHA-256 | `3ca866a0e637fa198bae17cd3a8f31fb02ad20f50fedcac1caa290e6dceba14e` |
-| Corpus composition | 4,470 samples; 9 attack categories x 30 = 270 authored attacks |
-| Samples used | 4,245 (categorized-attack mode; 225 uncategorized registry samples excluded) |
-| Antibody Reactor release | v0.2.0, MIT |
-| Seed | 20260916 |
-| Ledger head | `d4ad72536338804cee4815c4e3e345b9103f31c285b4223a590e93782d0c7397` |
-| Ledger anchor | `anchor:5af96e8814d2b5acb8090bba147c6cfe4d2bf86a5c7495ab11f4614d6da5f9da` |
+- `docs/EVIDENCE-CORRECTION-v0.3.1.md` — complete measurement accounting and withdrawn claims
+- `docs/INDEPENDENT-VALIDATION.md` — unseen tests and training-exposure boundaries
+- `docs/OASB-ISSUE-39-CORRECTION-DRAFT.md` — proposed corrective public comment
+- `docs/CI-WORKFLOW-OWNER-ACTION.md` — exact workflow change and current verification status
+- `docs/AUDIT-v0.3.0.md` — historical engineering audit with dated addenda
+- `docs/PRODUCTION-SAFEGUARDS.md` — remaining v1.0.0 gates
