@@ -23,8 +23,8 @@ jobs:
         run: npm run build
       - name: Engineering test suite
         run: npm test
-      - name: Verify the published evidence chain
-        run: node dist/cli.js verify --ledger artifacts/oasb-final/evidence-ledger.json
+      - name: Verify release evidence, claims, pins and checksums
+        run: npm run verify:release
       - name: Refuse to ship a corpus
         run: |
           if [ -e corpus ]; then echo "corpus/ must never be committed"; exit 1; fi
