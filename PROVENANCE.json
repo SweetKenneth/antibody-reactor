@@ -79,7 +79,16 @@
     "OASB is used as evolutionary selection pressure. Results are not presented as an independent post-hoc benchmark score, and no comparability to OASB or HackMyAgent historical scores is claimed.",
     "No OASB sample id, expected answer, benchmark filename or fixture identity is hard-coded. Classification depends only on artifact content and the evolved genome."
   ],
+  "current_release": {
+    "version": "0.3.0",
+    "tag": "v0.3.0",
+    "commit": "67d4ee6e75825e60d4817184e0c054464a8c082f",
+    "released": "2026-11-25",
+    "status": "published; advisory/shadow-only, not production-ready"
+  },
   "candidate_v0_3_0": {
+    "historical_record": true,
+    "status_note": "Original candidate status at audit time; superseded by current_release. The record is retained for audit continuity.",
     "status": "candidate, unreleased, not merged",
     "branch": "hardening/v0.3.0",
     "published_release_preserved": "v0.2.0 tag, artifacts, checksums and results untouched; run and cross-validation re-executed byte-identical",
@@ -111,5 +120,33 @@
       }
     },
     "trusted_fingerprints": "TRUSTED-FINGERPRINTS.json"
+  },
+  "correction_v0_3_1": {
+    "status": "candidate, not published",
+    "branch": "correction/v0.3.1",
+    "report": "docs/EVIDENCE-CORRECTION-v0.3.1.md",
+    "results": "artifacts/evidence-audit-v0.3.1/results.json",
+    "five_fold": {
+      "evaluation": "five independently trained populations",
+      "detected": 220,
+      "malicious": 270,
+      "recall": 0.8148148148148148,
+      "safe_label_disagreement": 49,
+      "safe_label_pool": 3975
+    },
+    "frozen_oasb_pr411": {
+      "evaluation": "one pinned v0.2.0 champion over 270 categorized attacks plus 177 hand-written benign fixtures",
+      "independent": false,
+      "exposure": "training-and-selection-exposed",
+      "confusion": { "tp": 229, "fp": 9, "fn": 41, "tn": 168 },
+      "unknown": 0,
+      "precision": 0.9621848739495799,
+      "recall": 0.8481481481481481,
+      "f1": 0.9015748031496063,
+      "false_positive_rate": 0.05084745762711865
+    },
+    "superseded_public_claims": "The earlier mixed-experiment precision/F1 and non-reproducing frozen-champion flag count are withdrawn; the correction report preserves their history and derivation.",
+    "historical_releases_changed": false,
+    "oasb_comment_posted": false
   }
 }

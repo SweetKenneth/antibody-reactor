@@ -10,10 +10,14 @@ const currentDocs = [
 const withdrawn = [/80\.88\s*%/, /81\.18\s*%/, /52\s*\/\s*177/, /220\s+TP,\s*52\s+FP/i, /Only the false-positive rate is out-of-sample/i];
 for (const rel of currentDocs) {
   const text = await readFile(rel, 'utf8');
-  for (const pattern of withdrawn) assert.equal(pattern.test(text), false, `${rel}: withdrawn or internally mixed claim remains: ${pattern}`);
+  for (const pattern of withdrawn) {
+    for (const line of text.split('\n').filter(line => pattern.test(line))) {
+      assert.match(line, /withdrawn|superseded|did not reproduce|not reproduced|earlier|previous/i, `${rel}: unqualified withdrawn or mixed claim remains: ${line}`);
+    }
+  }
 }
 const validation = await readFile('docs/INDEPENDENT-VALIDATION.md', 'utf8');
-for (const required of ['229 / 270', '9 / 177', '96.22%', '84.81%', '90.16%', '5.08%', 'training-exposed']) {
+for (const required of ['229 | 9 | 41 | 168', '96.22%', '84.81%', '90.16%', '5.08%', 'training-exposed']) {
   assert.ok(validation.includes(required), `docs/INDEPENDENT-VALIDATION.md: corrected measurement missing: ${required}`);
 }
 const readme = await readFile('README.md', 'utf8');
