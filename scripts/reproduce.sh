@@ -22,8 +22,9 @@ echo "== corpus identity =="
 ACTUAL_SHA="$(node -e "const{createHash}=require('node:crypto');const fs=require('node:fs');console.log(createHash('sha256').update(fs.readFileSync(process.argv[1])).digest('hex'))" "$CORPUS")"
 echo "corpus sha256: $ACTUAL_SHA"
 if [[ "$ACTUAL_SHA" != "$EXPECTED_CORPUS_SHA" ]]; then
-  echo "NOTE: this is not the corpus the published numbers were measured on." >&2
-  echo "Expected $EXPECTED_CORPUS_SHA. Results below will legitimately differ." >&2
+  echo "ERROR: OASB corpus fingerprint mismatch. Expected: $EXPECTED_CORPUS_SHA" >&2
+  echo "Actual: $ACTUAL_SHA" >&2
+  exit 2
 fi
 
 echo "== build and engineering tests =="
