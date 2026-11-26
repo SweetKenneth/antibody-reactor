@@ -1,0 +1,25 @@
+import { readFile } from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import { ratesFromConfusion, reconstructFiveFold } from '../dist/evidence.js';
+
+const readJson = async rel => JSON.parse(await readFile(rel, 'utf8'));
+const audit = await readJson('artifacts/evidence-audit-v0.3.1/results.json');
+const cv = await readJson('artifacts/oasb-cv5/cross-validation.json');
+const folds = await Promise.all(Array.from({ length: 5 }, (_, i) => readJson(`artifacts/oasb-cv5/fold-${i}.json`)));
+const fiveFold = reconstructFiveFold(cv, folds);
+assert.equal(audit.fiveFold.detected, 220);
+assert.equal(audit.fiveFold.malicious, 270);
+assert.equal(audit.fiveFold.safeFlagged, 49);
+assert.equal(audit.fiveFold.safeLabeled, 3975);
+assert.deepEqual({ ...audit.fiveFold, evaluationId: 'oasb-cv5-five-independent-populations', independentPolicies: true }, { evaluationId: 'oasb-cv5-five-independent-populations', independentPolicies: true, ...fiveFold });
+const frozen = audit.frozenOasbPr411;
+assert.deepEqual({ tp: frozen.tp, fp: frozen.fp, fn: frozen.fn, tn: frozen.tn }, { tp: 229, fp: 9, fn: 41, tn: 168 });
+assert.equal(frozen.malicious, 270);
+assert.equal(frozen.benign, 177);
+assert.equal(frozen.samples, 447);
+assert.equal(frozen.independent, false);
+assert.equal(frozen.exposure, 'training-and-selection-exposed');
+assert.deepEqual({ precision: frozen.precision, recall: frozen.recall, f1: frozen.f1, falsePositiveRate: frozen.falsePositiveRate }, ratesFromConfusion(frozen));
+assert.equal(frozen.categories.reduce((n, c) => n + c.malicious, 0), 270);
+assert.equal(frozen.categories.reduce((n, c) => n + c.detected, 0), 229);
+console.log('Evidence audit valid: five-fold 220/270; frozen 229 TP, 9 FP, 41 FN, 168 TN; experiments remain separate.');
