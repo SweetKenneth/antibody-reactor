@@ -2,7 +2,7 @@ import type { VaccineArtifact } from './types.js';
 import { extractTerms } from './features.js';
 import { assertValidVaccine, policyFingerprint, VaccineValidationError } from './vaccine-validate.js';
 
-export const SCANNER_VERSION = '0.3.0';
+export const SCANNER_VERSION = '0.3.1';
 
 export interface OasbCompatibleScannerResult {
   sampleId: string;
