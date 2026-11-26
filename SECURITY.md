@@ -17,7 +17,7 @@ Antibody Reactor is a research instrument for evolving and auditing detection po
 Deploy a vaccine in the staged shadow and canary phases recorded in the artifact before enforcing on production traffic.
 
 
-## Verifying a release (v0.3.0 candidate onward)
+## Verifying a release (v0.3.0 and later)
 
 ```bash
 node dist/cli.js verify --ledger artifacts/oasb-final/evidence-ledger.json --trusted TRUSTED-FINGERPRINTS.json --release 0.2.0 --require-pins
