@@ -21,6 +21,14 @@ jobs:
       - run: npm install --no-package-lock
       - name: Strict build
         run: npm run build
+      - name: Compile regression suite
+        run: npx tsc -p tsconfig.test.json
+      - name: Validate README code samples (R19)
+        run: node --test --test-name-pattern='R19' dist-test/test/release-evidence.test.js
+      - name: Validate documentation claims (R20)
+        run: node --test --test-name-pattern='R20' dist-test/test/release-evidence.test.js
+      - name: Validate release checksum test (R18)
+        run: node --test --test-name-pattern='R18' dist-test/test/release-evidence.test.js
       - name: Engineering test suite
         run: npm test
       - name: Verify release evidence, claims, pins and checksums
