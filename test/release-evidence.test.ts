@@ -19,7 +19,7 @@ test('R18 candidate checksum verification covers every source, dotfile, document
 
 test('R19 README examples execute against the real scanner and deployment APIs', () => {
   const readme = readFileSync('README.md', 'utf8');
-  const examples = [...readme.matchAll(/```js readme-smoke\n([\s\S]*?)\n```/g)].map(x => x[1]);
+  const examples = [...readme.matchAll(/```js readme-smoke\n([\s\S]*?)\n```/g)].map(x => x[1]!);
   assert.equal(examples.length, 2);
   for (const [i, source] of examples.entries()) {
     // Imports are supplied from the real compiled test modules; execute the remaining README body unchanged.
