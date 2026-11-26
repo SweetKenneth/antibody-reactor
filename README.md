@@ -76,7 +76,7 @@ npm run verify:release           # tests + pins + evidence + claims + artifacts 
 npm run audit:evidence           # reconstruct metrics from original artifacts (OASB corpus optional)
 ```
 
-`verify:release` is the v0.3.1 candidate's complete local verification gate. GitHub Actions has not yet been observed running this candidate; see `docs/CI-WORKFLOW-OWNER-ACTION.md`.
+`verify:release` is the v0.3.1 candidate's complete verification gate. GitHub Actions passed it on Node 20 and Node 22 for candidate commit `e64f22588259969dc813c6f9b0f98dc7ef0b5e86`; inspect the latest PR checks before merging any later commit.
 
 ## Scan artifacts (advisory / shadow only)
 

@@ -20,7 +20,7 @@ npm run verify:release
 - Candidate checksum manifest: complete file-set coverage, including dotfiles.
 - Full evolutionary replay: 10/10 final-run files and 7/7 five-fold files byte-identical.
 
-GitHub Actions status for this candidate is **not observed**. The proposed workflow is in `.github/workflows/ci.yml` on the correction branch; see `docs/CI-WORKFLOW-OWNER-ACTION.md` before claiming CI is green.
+GitHub Actions passed on **Node 20 and Node 22** for candidate commit `e64f22588259969dc813c6f9b0f98dc7ef0b5e86`, after CI exposed and we fixed unsealed lockfile generation. The workflow is in `.github/workflows/ci.yml`; inspect the latest PR checks before merging any later commit.
 
 ## Historical transcripts (preserved)
 
